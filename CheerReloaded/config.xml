@@ -1,0 +1,15 @@
+﻿<Config>
+	<!-- display debug information. Also if exception occurs, it gets copied to clipboard -->
+	<DebugMode>false</DebugMode>
+	<!-- how many times can you cheer in a mission? -->
+	<CheerAmount>3</CheerAmount>
+	<!-- should morale change be displayed in message box? -->
+	<ReportMoraleChange>true</ReportMoraleChange>
+	<!-- should we prevent negative morale change (for friendly units)? -->
+	<PreventNegativeMorale>true</PreventNegativeMorale>
+	<!-- how high your leadership has to be for it to affect enemies? -->
+	<EnemyMoraleLeadershipThreshold>75</EnemyMoraleLeadershipThreshold>
+	<!-- a key that will apply cheering, default is V (47)
+	full code list: https://pastebin.com/v5Vz84ys -->
+	<KeyCode>47</KeyCode>
+</Config>
