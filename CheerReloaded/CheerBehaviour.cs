@@ -32,13 +32,12 @@ namespace CheerReloaded {
 			_config = config;
 			_cheerAmount = config.CheerAmount;
 			_canCheer = true;
-
-			if (Mission.Current.Mode == MissionMode.Battle) {
-				var mainHero = Hero.All.Where(x => x.StringId == Agent.Main.Character.StringId).FirstOrDefault();
-				Helpers.Say(mainHero.GetName().ToString());
-			}
 		}
 
+		/// <summary>
+		/// Runs on every tick of the game. Considering it runs extremely often only the lightest things should
+		/// appear here, such as user input handling.
+		/// </summary>
 		public override async void OnMissionTick(float dt) {
 			if (Input.IsKeyReleased((InputKey)_config.KeyCode) && _canCheer) {
 				_canCheer = false;
@@ -55,6 +54,9 @@ namespace CheerReloaded {
 			}
 		}
 
+		/// <summary>
+		/// Calculates effect radius and a list of agents to be affected. Ignores cheer limit.
+		/// </summary>
 		private async Task DoVictoryCheer() {
 			var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 			_effectRadius = leadership.Clamp(50, 400);
@@ -86,7 +88,7 @@ namespace CheerReloaded {
 		}
 
 		/// <summary>
-		/// Calculates morale changed, effect radius, list of agents to be affected 
+		/// Calculates morale changed, effect radius, a list of agents to be affected. Handles morale report and applies XP increase.
 		/// </summary>
 		private async Task DoInCombatCheer() {
 			if (_cheerAmount < 1) {

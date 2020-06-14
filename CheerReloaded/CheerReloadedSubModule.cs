@@ -12,6 +12,10 @@ namespace CheerReloaded {
 	public class CheerReloadedSubModule : MBSubModuleBase {
 		public Config config;
 
+		/// <summary>
+		/// Entry point of the mod. When a mission is initialized, it reads user config,
+		/// serializes it into Config object and adds Cheer behaviour to a mission.
+		/// </summary>
 		public override void OnMissionBehaviourInitialize(Mission mission) {
 			var serializer = new XmlSerializer(typeof(Config));
 			var reader = new StreamReader(BasePath.Name + "Modules/CheerReloaded/bin/Win64_Shipping_Client/config.xml");
