@@ -72,7 +72,7 @@ namespace CheerReloaded {
 		private async Task DoVictoryCheer() {
 			try {
 				var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
-				_effectRadius = leadership.Clamp(50, 400);
+				_effectRadius = (leadership * 1.5f).Clamp(100, 700);
 
 				var agentList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
 									.Where(x => x.IsMount == false)
@@ -209,21 +209,17 @@ namespace CheerReloaded {
 					a.MakeVoice(SkinVoiceManager.VoiceType.Yell, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					return;
 				}
-				if (_moraleChange.IsInRange(3, 5, false)) {
-					a.MakeVoice(SkinVoiceManager.VoiceType.FaceEnemy, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
-					return;
-				}
-				if (_moraleChange.IsInRange(5, null, false)) {
+				if (_moraleChange.IsInRange(3, null, false)) {
 					a.MakeVoice(SkinVoiceManager.VoiceType.Victory, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					return;
 				}
 			} else {
 				if (_moraleChange.IsInRange(-1, 0, true, false)) {
-					a.MakeVoice(SkinVoiceManager.VoiceType.FallBack, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					a.MakeVoice(SkinVoiceManager.VoiceType.Fear, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					return;
 				}
 				if (_moraleChange.IsInRange(-3, -1, true, false)) {
-					a.MakeVoice(SkinVoiceManager.VoiceType.Fear, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					a.MakeVoice(SkinVoiceManager.VoiceType.FallBack, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					return;
 				}
 				if (_moraleChange.IsInRange(null, -3, true, false)) {
