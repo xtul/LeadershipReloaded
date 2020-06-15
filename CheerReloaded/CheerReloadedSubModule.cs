@@ -26,7 +26,9 @@ namespace CheerReloaded {
 				Helpers.Log("Cheer Reloaded activated.");
 			}
 
-			mission.AddMissionBehaviour(new CheerBehaviour(config));
+			if (mission.CombatType == Mission.MissionCombatType.ArenaCombat) return;
+			if (mission.CombatType == Mission.MissionCombatType.NoCombat) return;
+			mission.AddMissionBehaviour(new CheerBehaviour(config));			
 		}
 	}
 }

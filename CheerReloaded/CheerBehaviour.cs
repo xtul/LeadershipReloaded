@@ -147,9 +147,14 @@ namespace CheerReloaded {
 					}
 				}
 
+				var xpToGrant = (totalFriendlyMoraleApplied + (totalEnemyMoraleApplied * -1)).Clamp(0, 6000);
+
 				if (!(Campaign.Current is null)) {
 					var mainHero = Hero.All.Where(x => x.StringId == Agent.Main.Character.StringId).FirstOrDefault();
-					mainHero.AddSkillXp(DefaultSkills.Leadership, totalFriendlyMoraleApplied);
+					if (xpToGrant <= 0) {
+						xpToGrant += 10;
+					}
+					mainHero.AddSkillXp(DefaultSkills.Leadership, xpToGrant);
 				}
 
 
@@ -189,7 +194,7 @@ namespace CheerReloaded {
 
 			if (doAnim) {
 				// additionalFlags: it seems like anything past 2 means "can be cancelled by other actions"
-				a.SetActionChannel(1, _cheerActions[MBRandom.RandomInt(_cheerActions.Length)], true, 2);
+				a.SetActionChannel(1, _cheerActions[MBRandom.RandomInt(_cheerActions.Length)], additionalFlags: 2);
 			}
 
 			if (!doVoice) return;
