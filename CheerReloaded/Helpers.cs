@@ -33,5 +33,23 @@ namespace CheerReloaded {
 			else
 				return val;
 		}
+
+		// https://stackoverflow.com/a/62181085/11365088
+		/// <summary>
+		/// Returns whether specified value is in valid range.
+		/// </summary>
+		/// <typeparam name="T">The type of data to validate.</typeparam>
+		/// <param name="value">The value to validate.</param>
+		/// <param name="min">The minimum valid value.</param>
+		/// <param name="minInclusive">Whether the minimum value is valid.</param>
+		/// <param name="max">The maximum valid value.</param>
+		/// <param name="maxInclusive">Whether the maximum value is valid.</param>
+		/// <returns>Whether the value is within range.</returns>
+		public static bool IsInRange<T>(this T value, T? min, T? max = null, bool minInclusive = true, bool maxInclusive = true)
+			where T : struct, IComparable<T> {
+			var minValid = min == null || (minInclusive && value.CompareTo(min.Value) >= 0) || (!minInclusive && value.CompareTo(min.Value) > 0);
+			var maxValid = max == null || (maxInclusive && value.CompareTo(max.Value) <= 0) || (!maxInclusive && value.CompareTo(max.Value) < 0);
+			return minValid && maxValid;
+		}
 	}
 }

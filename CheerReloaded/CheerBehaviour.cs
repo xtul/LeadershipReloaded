@@ -18,10 +18,20 @@ namespace CheerReloaded {
 
 		private readonly Config _config;
 		private readonly ActionIndexCache[] _cheerActions = new ActionIndexCache[] {
-			ActionIndexCache.Create("act_cheer_1"),
-			ActionIndexCache.Create("act_cheer_2"),
-			ActionIndexCache.Create("act_cheer_3"),
-			ActionIndexCache.Create("act_cheer_4")
+			ActionIndexCache.Create("act_command_bow"),
+			ActionIndexCache.Create("act_command_follow_bow"),
+			ActionIndexCache.Create("act_command_unarmed"),
+			ActionIndexCache.Create("act_command_unarmed_leftstance"),
+			ActionIndexCache.Create("act_command_follow_unarmed"),
+			ActionIndexCache.Create("act_command_follow_unarmed_leftstance"),
+			ActionIndexCache.Create("act_command_2h"),
+			ActionIndexCache.Create("act_command_2h_leftstance"),
+			ActionIndexCache.Create("act_command"),
+			ActionIndexCache.Create("act_command_follow"),
+			ActionIndexCache.Create("act_command_leftstance"),
+			ActionIndexCache.Create("act_command_follow_2h"),
+			ActionIndexCache.Create("act_command_follow_2h_leftstance"),
+			ActionIndexCache.Create("act_command_follow_leftstance")
 		};
 		private float _moraleChange;
 		private float _effectRadius;
@@ -40,6 +50,8 @@ namespace CheerReloaded {
 		/// </summary>
 		public override async void OnMissionTick(float dt) {
 			if (Input.IsKeyReleased((InputKey)_config.KeyCode) && _canCheer) {
+				if (Mission.Current.Mode != MissionMode.Battle) return;
+
 				_canCheer = false;
 
 				if (!Mission.Current.MissionEnded()) {
@@ -58,27 +70,24 @@ namespace CheerReloaded {
 		/// Calculates effect radius and a list of agents to be affected. Ignores cheer limit.
 		/// </summary>
 		private async Task DoVictoryCheer() {
-			var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
-			_effectRadius = leadership.Clamp(50, 400);
-
-			var agentList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
-								.Where(x => x.IsMount == false)
-								.Where(x => x.Health > 0)
-								.Where(x => x.IsMainAgent == false)
-								.Where(x => x.Team.IsFriendOf(Agent.Main.Team))
-								.ToList();
-
 			try {
-				#pragma warning disable CS4014 // don't await, we want everyone to cheer at the same time
-				ApplyCheering(Agent.Main);
+				var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
+				_effectRadius = leadership.Clamp(50, 400);
+
+				var agentList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
+									.Where(x => x.IsMount == false)
+									.Where(x => x.Health > 0)
+									.Where(x => x.IsMainAgent == false)
+									.Where(x => x.Team.IsFriendOf(Agent.Main.Team))
+									.ToList();
+
+				ApplyCheerEffects(Agent.Main);
 				await Task.Delay(TimeSpan.FromSeconds(0.65));
 
 				foreach (var a in agentList) {
-					var rng = new Random();
-					ApplyCheering(a);
-					await Task.Delay(rng.Next(0, 200));
+					ApplyCheerEffects(a);
+					await Task.Delay(MBRandom.RandomInt(0, 20));
 				}
-				#pragma warning restore CS4014
 			} catch (Exception ex) {
 				if (_config.DebugMode) {
 					Helpers.Log(ex.Message);
@@ -96,46 +105,44 @@ namespace CheerReloaded {
 				return;
 			}
 
-			var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
-			float advantageBonus = ((Agent.Main.Team.ActiveAgents.Count
-								 - Mission.Current.Teams.GetEnemiesOf(Agent.Main.Team).Count())
-								 / 12)
-								 .Clamp(-2, 2);
-
-			var mCap = _config.MaximumMoralePerAgent;
-			_moraleChange = ((leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap);
-			_effectRadius = (leadership / 2).Clamp(25, 200);
-
-			if (_config.PreventNegativeMorale) {
-				_moraleChange.Clamp(0, 100);
-			}
-
-			var agentsList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
-								.Where(x => x.IsMount == false)
-								.Where(x => x.Health > 0)
-								.Where(x => x.IsMainAgent == false);
-
-			var friendlyAgentsList = agentsList.Where(x => x.Team.IsFriendOf(Agent.Main.Team)).ToList();
-			var enemyAgentsList = agentsList.Where(x => x.Team.IsEnemyOf(Agent.Main.Team)).ToList();
-
-			var totalFriendlyMoraleApplied = 0;
-			var totalEnemyMoraleApplied = 0;
 			try {
-				#pragma warning disable CS4014 // don't await, we want everyone to cheer at the same time
-				ApplyCheering(Agent.Main);
+				var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
+				float advantageBonus = ((Agent.Main.Team.ActiveAgents.Count
+									 - Mission.Current.Teams.GetEnemiesOf(Agent.Main.Team).Count())
+									 / 12)
+									 .Clamp(-2, 2);
+
+				var mCap = _config.MaximumMoralePerAgent;
+				_moraleChange = ((leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap);
+				_effectRadius = (leadership / 2).Clamp(25, 200);
+
+				if (_config.PreventNegativeMorale) {
+					_moraleChange.Clamp(0, 100);
+				}
+
+				var agentsList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
+									.Where(x => x.IsMount == false)
+									.Where(x => x.Health > 0)
+									.Where(x => x.IsMainAgent == false);
+
+				var friendlyAgentsList = agentsList.Where(x => x.Team.IsFriendOf(Agent.Main.Team)).ToList();
+				var enemyAgentsList = agentsList.Where(x => x.Team.IsEnemyOf(Agent.Main.Team)).ToList();
+
+				var totalFriendlyMoraleApplied = 0;
+				var totalEnemyMoraleApplied = 0;
+				ApplyCheerEffects(Agent.Main);
 				await Task.Delay(TimeSpan.FromSeconds(0.65));
 
 				foreach (var a in friendlyAgentsList) {
-					ApplyCheering(a);
-					var rng = new Random();					
-					await Task.Delay(rng.Next(0, 25));
+					ApplyCheerEffects(a);
+					await Task.Delay(MBRandom.RandomInt(0, 20));
 					totalFriendlyMoraleApplied += ApplyMoraleChange(a);
 				}
-				#pragma warning restore CS4014
 
 				if (leadership >= _config.EnemyMoraleLeadershipThreshold) {
 					foreach (var a in enemyAgentsList) {
 						totalEnemyMoraleApplied += ApplyMoraleChange(a, true);
+						ApplyCheerEffects(a, false);
 						a.MakeVoice(SkinVoiceManager.VoiceType.Victory, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					}
 				}
@@ -145,6 +152,25 @@ namespace CheerReloaded {
 					mainHero.AddSkillXp(DefaultSkills.Leadership, totalFriendlyMoraleApplied);
 				}
 
+
+				if (_config.ReportMoraleChange) {
+					if (totalFriendlyMoraleApplied > 0) {
+						Helpers.Say($"Each party member in the area received {_moraleChange} morale, {totalFriendlyMoraleApplied} in total.");
+						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
+							Helpers.Say($"In addition, enemies lost {totalEnemyMoraleApplied} morale.");
+						}
+						_cheerAmount--;
+					} else if (totalFriendlyMoraleApplied < 0) {
+						Helpers.Say($"Your own soldiers felt demoralized by your battle cries. {_moraleChange} for each, {totalFriendlyMoraleApplied} in total.");
+						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
+							Helpers.Say($"This caused nearby enemies to gain {totalEnemyMoraleApplied} morale.");
+						}
+						_cheerAmount--;
+					} else {
+						Helpers.Say("You failed to affect any soldiers' morale.");
+					}
+				}
+
 			} catch (Exception ex) {
 				if (_config.DebugMode) {
 					Helpers.Log(ex.Message);
@@ -152,21 +178,52 @@ namespace CheerReloaded {
 				}
 			}
 
-			if (_config.ReportMoraleChange) {
-				if (totalFriendlyMoraleApplied > 0) {
-					Helpers.Say($"Each party member in the area received {_moraleChange} morale, {totalFriendlyMoraleApplied} in total.");
-					if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
-						Helpers.Say($"In addition, enemies lost {totalEnemyMoraleApplied} morale.");
-					}
-					_cheerAmount--;
-				} else if (totalFriendlyMoraleApplied < 0) {
-					Helpers.Say($"Your own soldiers felt demoralized by your battle cries. {_moraleChange} for each, {totalFriendlyMoraleApplied} in total.");
-					if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
-						Helpers.Say($"This caused nearby enemies to gain {totalEnemyMoraleApplied} morale.");
-					}
-					_cheerAmount--;
-				} else {
-					Helpers.Say("You failed to affect any soldiers' morale.");
+		}
+
+		/// <summary>
+		/// Applies audio-visual effects.
+		/// </summary>
+		/// <param name="a">An agent to apply cheering to.</param>
+		private void ApplyCheerEffects(Agent a, bool doAnim = true, bool doVoice = true) {
+			if (Mission.Current == null) return;
+
+			if (doAnim) {
+				// additionalFlags: it seems like anything past 2 means "can be cancelled by other actions"
+				a.SetActionChannel(1, _cheerActions[MBRandom.RandomInt(_cheerActions.Length)], true, 2);
+			}
+
+			if (!doVoice) return;
+
+			// i know ugly as hell
+			if (_moraleChange >= 0) {
+				if (_moraleChange.IsInRange(0, 1)) {
+					a.MakeVoice(SkinVoiceManager.VoiceType.Grunt, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					return;
+				}
+				if (_moraleChange.IsInRange(1, 3, false)) {
+					a.MakeVoice(SkinVoiceManager.VoiceType.Yell, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					return;
+				}
+				if (_moraleChange.IsInRange(3, 5, false)) {
+					a.MakeVoice(SkinVoiceManager.VoiceType.FaceEnemy, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					return;
+				}
+				if (_moraleChange.IsInRange(5, null, false)) {
+					a.MakeVoice(SkinVoiceManager.VoiceType.Victory, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					return;
+				}
+			} else {
+				if (_moraleChange.IsInRange(-1, 0, true, false)) {
+					a.MakeVoice(SkinVoiceManager.VoiceType.FallBack, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					return;
+				}
+				if (_moraleChange.IsInRange(-3, -1, true, false)) {
+					a.MakeVoice(SkinVoiceManager.VoiceType.Fear, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					return;
+				}
+				if (_moraleChange.IsInRange(null, -3, true, false)) {
+					a.MakeVoice(SkinVoiceManager.VoiceType.Retreat, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					return;
 				}
 			}
 
@@ -174,38 +231,21 @@ namespace CheerReloaded {
 		}
 
 		/// <summary>
-		/// Applies audio-visual effects.
-		/// </summary>
-		/// <param name="a">An agent to apply cheering to.</param>
-		/// <returns></returns>
-		private async Task ApplyCheering(Agent a) {
-			// i hate checking for a fucking null mission before i do anything so fucking much
-			if (Mission.Current == null) return;
-
-			a.SetActionChannel(1, _cheerActions[MBRandom.RandomInt(_cheerActions.Length)], actionSpeed: 1.5f);
-			a.MakeVoice(SkinVoiceManager.VoiceType.Victory, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
-			await Task.Delay(TimeSpan.FromSeconds(2.5));
-			// you need to ignore priority to break previous animation - took me way too long to figure out
-			if (Mission.Current != null) {
-				a.SetActionChannel(1, ActionIndexCache.act_none, ignorePriority: true);
-			}
-		}
-
-		/// <summary>
 		/// Applies morale changes.
 		/// </summary>
 		/// <param name="a">An agent to apply morale changes to.</param>
 		/// <param name="inverted">Inverts morale amount, i.e. 3 morale turns into -3 morale</param>
-		/// <returns></returns>
+		/// <returns>Amount of morale that was applied.</returns>
 		private int ApplyMoraleChange(Agent a, bool inverted = false) {
 			var currentMorale = a.GetMorale();
 			if (inverted) {
 				var invertedMorale = _moraleChange / 2;
 				a.SetMorale(currentMorale - invertedMorale);
+				return (int)invertedMorale;
 			} else {
 				a.SetMorale(currentMorale + _moraleChange);
+				return (int)_moraleChange;
 			}
-			return (int)_moraleChange;
 		}
 	}
 }
