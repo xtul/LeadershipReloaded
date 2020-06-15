@@ -200,7 +200,8 @@ namespace CheerReloaded {
 		private int ApplyMoraleChange(Agent a, bool inverted = false) {
 			var currentMorale = a.GetMorale();
 			if (inverted) {
-				a.SetMorale((currentMorale + _moraleChange) * -1);
+				var invertedMorale = _moraleChange / 2;
+				a.SetMorale(currentMorale - invertedMorale);
 			} else {
 				a.SetMorale(currentMorale + _moraleChange);
 			}
