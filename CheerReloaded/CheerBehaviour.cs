@@ -169,6 +169,7 @@ namespace CheerReloaded {
 					mainHero.AddSkillXp(DefaultSkills.Leadership, xpToGrant);
 				}
 
+				_cheerAmount--;
 
 				if (_config.ReportMoraleChange) {
 					if (totalFriendlyMoraleApplied > 0) {
@@ -176,15 +177,20 @@ namespace CheerReloaded {
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
 							Helpers.Say($"In addition, enemies lost {totalEnemyMoraleApplied} morale.");
 						}
-						_cheerAmount--;
 					} else if (totalFriendlyMoraleApplied < 0) {
 						Helpers.Say($"Your own soldiers felt demoralized by your battle cries. {_moraleChange} for each, {totalFriendlyMoraleApplied} in total.");
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
 							Helpers.Say($"This caused nearby enemies to gain {totalEnemyMoraleApplied} morale.");
 						}
-						_cheerAmount--;
+					} else if (totalEnemyMoraleApplied < 0) {
+						Helpers.Say($"You reduced nearby enemies morale by {totalEnemyMoraleApplied}.");
 					} else {
 						Helpers.Say("You failed to affect any soldiers' morale.");
+						_cheerAmount++;
+					}
+				} else {
+					if (totalFriendlyMoraleApplied == 0 && totalEnemyMoraleApplied == 0) {
+						_cheerAmount++;
 					}
 				}
 
