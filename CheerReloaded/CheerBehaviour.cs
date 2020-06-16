@@ -175,7 +175,7 @@ namespace CheerReloaded {
 					if (totalFriendlyMoraleApplied > 0) {
 						Helpers.Say($"Each party member in the area received {_moraleChange} morale, {totalFriendlyMoraleApplied} in total.");
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
-							Helpers.Say($"In addition, enemies lost {totalEnemyMoraleApplied} morale.");
+							Helpers.Say($"In addition, each enemy lost {_moraleChange / 2} morale, {totalEnemyMoraleApplied} in total.");
 						}
 					} else if (totalFriendlyMoraleApplied < 0) {
 						Helpers.Say($"Your own soldiers felt demoralized by your battle cries. {_moraleChange} for each, {totalFriendlyMoraleApplied} in total.");
@@ -183,7 +183,7 @@ namespace CheerReloaded {
 							Helpers.Say($"This caused nearby enemies to gain {totalEnemyMoraleApplied} morale.");
 						}
 					} else if (totalEnemyMoraleApplied > 0) {
-						Helpers.Say($"You reduced nearby enemies morale by {totalEnemyMoraleApplied}.");
+						Helpers.Say($"You reduced each enemies morale by {_moraleChange / 2}, {totalEnemyMoraleApplied} in total.");
 					} else {
 						Helpers.Say("You failed to affect any soldiers' morale.");
 						_cheerAmount++;
