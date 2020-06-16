@@ -16,4 +16,18 @@
 	<!-- a key that will apply cheering, default is V (47)
 	full code list: https://pastebin.com/v5Vz84ys -->
 	<KeyCode>47</KeyCode>
+
+	<!-- AI section -->
+	<AI>
+		<!-- if set to true, AI heroes (both enemy and friendly) will be able to cheer -->
+		<Enabled>true</Enabled>
+		<!-- defines how many times AI can cheer regardless of it's skills -->
+		<BaselineCheerAmount>2</BaselineCheerAmount>
+		<!-- AI receives an additional cheer every X Leadership levels. Values lower than 1 will be set to 1. -->
+		<CheersPerXLeadershipLevels>100</CheersPerXLeadershipLevels>
+		<!-- morale change will never exceed this amount (or it's negative) -->
+		<MaximumMoralePerAgent>7</MaximumMoralePerAgent>
+		<!-- determines whether to display "X cheers, boosting..." announcemend on the top of the screen -->
+		<DisplayAnnouncement>true</DisplayAnnouncement>
+	</AI>
 </Config>

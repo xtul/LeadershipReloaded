@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.Core;
+using TaleWorlds.Localization;
 using TaleWorlds.TwoDimension;
 
 namespace CheerReloaded {
@@ -14,6 +15,10 @@ namespace CheerReloaded {
 
 		public static void Log(string text) {
 			InformationManager.DisplayMessage(new InformationMessage(text, new TaleWorlds.Library.Color(0.5f, 0.5f, 0.5f)));
+		}
+
+		public static void Announce(string text) {
+			InformationManager.AddQuickInformation(new TextObject(text));
 		}
 
 		// https://stackoverflow.com/a/2683487/

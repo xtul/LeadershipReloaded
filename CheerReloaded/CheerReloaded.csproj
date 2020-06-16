@@ -256,7 +256,10 @@
     <!-- TODO: Don't think this can be made optional -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CheerBehaviour.cs" />
+    <Compile Include="Cheering.AI\CheerAIBehaviour.cs" />
+    <Compile Include="Cheering.AI\CheerAIComponent.cs" />
+    <Compile Include="Cheering.Common\CheerCommonMethods.cs" />
+    <Compile Include="Cheering.Player\CheerBehaviour.cs" />
     <Compile Include="CheerReloadedSubModule.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Helpers.cs" />

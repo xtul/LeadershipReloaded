@@ -10,19 +10,22 @@ using System.IO;
 
 namespace CheerReloaded {
 	public class CheerReloadedSubModule : MBSubModuleBase {
-		public Config config;
+		public Config _config;
+		public CheerCommonMethods _common;
 
 		/// <summary>
 		/// Entry point of the mod. When a mission is initialized, it reads user config,
 		/// serializes it into Config object and adds Cheer behaviour to a mission.
 		/// </summary>
 		public override void OnMissionBehaviourInitialize(Mission mission) {
+			_common = new CheerCommonMethods();
+
 			var serializer = new XmlSerializer(typeof(Config));
 			var reader = new StreamReader(BasePath.Name + "Modules/CheerReloaded/bin/Win64_Shipping_Client/config.xml");
-			config = (Config)serializer.Deserialize(reader);
+			_config = (Config)serializer.Deserialize(reader);
 			reader.Close();
 
-			if (config.DebugMode == true) {
+			if (_config.DebugMode == true) {
 				Helpers.Log("Cheer Reloaded activated.");
 			}
 
@@ -30,14 +33,15 @@ namespace CheerReloaded {
 
 			if (mission.CombatType == Mission.MissionCombatType.ArenaCombat) return;
 			if (mission.CombatType == Mission.MissionCombatType.NoCombat) return;
-			mission.AddMissionBehaviour(new CheerBehaviour(config));			
+
+			mission.AddMissionBehaviour(new CheerBehaviour(_config, _common));
+			if (_config.AI.Enabled) {
+				mission.AddMissionBehaviour(new CheerAIBehaviour(_config, _common));
+			}
 		}
 
-		/// <summary>
-		/// Corrects config 
-		/// </summary>
 		private void CorrectConfig() {
-			config.CheersPerXLeadershipLevels.Clamp(1, 500);
+			_config.CheersPerXLeadershipLevels.Clamp(1, 500);
 		}
 	}
 }
