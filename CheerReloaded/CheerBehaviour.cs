@@ -182,7 +182,7 @@ namespace CheerReloaded {
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
 							Helpers.Say($"This caused nearby enemies to gain {totalEnemyMoraleApplied} morale.");
 						}
-					} else if (totalEnemyMoraleApplied < 0) {
+					} else if (totalEnemyMoraleApplied > 0) {
 						Helpers.Say($"You reduced nearby enemies morale by {totalEnemyMoraleApplied}.");
 					} else {
 						Helpers.Say("You failed to affect any soldiers' morale.");
@@ -284,6 +284,7 @@ namespace CheerReloaded {
 		private int ApplyMoraleChange(Agent a, bool inverted = false) {
 			var currentMorale = a.GetMorale();
 			if (inverted) {
+				if (currentMorale < 38) return 0;
 				var invertedMorale = _moraleChange / 2;
 				a.SetMorale(currentMorale - invertedMorale);
 				return (int)invertedMorale;
