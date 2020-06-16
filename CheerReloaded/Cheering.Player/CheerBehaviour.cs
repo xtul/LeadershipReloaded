@@ -25,7 +25,6 @@ namespace CheerReloaded {
 
 		public CheerBehaviour(Config config, CheerCommonMethods common) {
 			_config = config;
-			_cheerAmount = config.BaselineCheerAmount;
 			_canCheer = true;
 			_common = common;
 		}
@@ -35,6 +34,7 @@ namespace CheerReloaded {
 			if (banner == null) return;
 
 			if (agent == Agent.Main) {
+				_cheerAmount = _config.BaselineCheerAmount;
 				var leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 				_cheerAmount += Math.DivRem(leadership, _config.CheersPerXLeadershipLevels, out _);
 				Helpers.Say($"You can cheer {_cheerAmount} times.");
@@ -105,8 +105,8 @@ namespace CheerReloaded {
 
 			try {
 				var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
-				var playerAlliedAgentsCount = Mission.Current.Teams.Player.ActiveAgents.Count;
-				var playerEnemyAgentsCount = Mission.Current.Teams.PlayerEnemy.ActiveAgents.Count;
+				var playerAlliedAgentsCount = Mission.Current.Teams.Player?.ActiveAgents.Count ?? 0;
+				var playerEnemyAgentsCount = Mission.Current.Teams.PlayerEnemy?.ActiveAgents.Count ?? 0;
 				float advantageBonus = ((playerAlliedAgentsCount
 									 - playerEnemyAgentsCount)
 									 / 12)
