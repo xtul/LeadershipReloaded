@@ -26,9 +26,18 @@ namespace CheerReloaded {
 				Helpers.Log("Cheer Reloaded activated.");
 			}
 
+			CorrectConfig();
+
 			if (mission.CombatType == Mission.MissionCombatType.ArenaCombat) return;
 			if (mission.CombatType == Mission.MissionCombatType.NoCombat) return;
 			mission.AddMissionBehaviour(new CheerBehaviour(config));			
+		}
+
+		/// <summary>
+		/// Corrects config 
+		/// </summary>
+		private void CorrectConfig() {
+			config.CheersPerXLeadershipLevels.Clamp(1, 500);
 		}
 	}
 }

@@ -40,8 +40,19 @@ namespace CheerReloaded {
 
 		public CheerBehaviour(Config config) {
 			_config = config;
-			_cheerAmount = config.CheerAmount;
+			_cheerAmount = config.BaselineCheerAmount;
 			_canCheer = true;
+		}
+
+		public override void OnAgentBuild(Agent agent, Banner banner) {
+			if (agent == null) return;
+			if (banner == null) return;
+
+			if (agent == Agent.Main) {
+				var leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
+				_cheerAmount += Math.DivRem(leadership, _config.CheersPerXLeadershipLevels, out _);
+				Helpers.Say($"You can cheer {_cheerAmount} times.");
+			}
 		}
 
 		/// <summary>
@@ -86,7 +97,7 @@ namespace CheerReloaded {
 
 				foreach (var a in agentList) {
 					ApplyCheerEffects(a);
-					await Task.Delay(MBRandom.RandomInt(0, 20));
+					await Task.Delay(MBRandom.RandomInt(0, 9));
 				}
 			} catch (Exception ex) {
 				if (_config.DebugMode) {
@@ -135,7 +146,7 @@ namespace CheerReloaded {
 
 				foreach (var a in friendlyAgentsList) {
 					ApplyCheerEffects(a);
-					await Task.Delay(MBRandom.RandomInt(0, 20));
+					await Task.Delay(MBRandom.RandomInt(0, 9));
 					totalFriendlyMoraleApplied += ApplyMoraleChange(a);
 				}
 
@@ -152,7 +163,7 @@ namespace CheerReloaded {
 				if (!(Campaign.Current is null)) {
 					var mainHero = Hero.All.Where(x => x.StringId == Agent.Main.Character.StringId).FirstOrDefault();
 					if (xpToGrant <= 0) {
-						xpToGrant += 10;
+						xpToGrant = 10;
 					}
 					mainHero.AddSkillXp(DefaultSkills.Leadership, xpToGrant);
 				}

@@ -1,8 +1,10 @@
 ﻿<Config>
 	<!-- display debug information. Also if exception occurs, it gets copied to clipboard -->
 	<DebugMode>false</DebugMode>
-	<!-- how many times can you cheer in a mission? -->
-	<CheerAmount>3</CheerAmount>
+	<!-- defines how many times you can cheer regardless of your skills -->
+	<BaselineCheerAmount>2</BaselineCheerAmount>
+	<!-- you receive an additional cheer every X Leadership levels. Values lower than 1 will be set to 1. -->
+	<CheersPerXLeadershipLevels>50</CheersPerXLeadershipLevels>
 	<!-- should morale change be displayed in message box? -->
 	<ReportMoraleChange>true</ReportMoraleChange>
 	<!-- should we prevent negative morale change (for friendly units)? -->
