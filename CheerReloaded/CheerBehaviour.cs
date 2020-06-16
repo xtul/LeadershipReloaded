@@ -20,10 +20,6 @@ namespace CheerReloaded {
 		private readonly ActionIndexCache[] _cheerActions = new ActionIndexCache[] {
 			ActionIndexCache.Create("act_command_bow"),
 			ActionIndexCache.Create("act_command_follow_bow"),
-			ActionIndexCache.Create("act_command_unarmed"),
-			ActionIndexCache.Create("act_command_unarmed_leftstance"),
-			ActionIndexCache.Create("act_command_follow_unarmed"),
-			ActionIndexCache.Create("act_command_follow_unarmed_leftstance"),
 			ActionIndexCache.Create("act_command_2h"),
 			ActionIndexCache.Create("act_command_2h_leftstance"),
 			ActionIndexCache.Create("act_command"),
@@ -88,6 +84,7 @@ namespace CheerReloaded {
 				var agentList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
 									.Where(x => x.IsMount == false)
 									.Where(x => x.Health > 0)
+									.Where(x => x.Character != null)
 									.Where(x => x.IsMainAgent == false)
 									.Where(x => x.Team.IsFriendOf(Agent.Main.Team))
 									.ToList();
@@ -133,6 +130,7 @@ namespace CheerReloaded {
 
 				var agentsList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
 									.Where(x => x.IsMount == false)
+									.Where(x => x.Character != null)
 									.Where(x => x.Health > 0)
 									.Where(x => x.IsMainAgent == false);
 
@@ -158,13 +156,16 @@ namespace CheerReloaded {
 					}
 				}
 
-				var xpToGrant = (totalFriendlyMoraleApplied + (totalEnemyMoraleApplied * -1)).Clamp(0, 6000);
 
 				if (!(Campaign.Current is null)) {
+					var calcResult = CalculateXpDividerAndMaxXP(leadership);					
+
+					var xpToGrant = ((totalFriendlyMoraleApplied + (totalEnemyMoraleApplied * -1)) / calcResult[0])
+									.Clamp(0, calcResult[1] * 400);
+
 					var mainHero = Hero.All.Where(x => x.StringId == Agent.Main.Character.StringId).FirstOrDefault();
-					if (xpToGrant <= 0) {
-						xpToGrant = 10;
-					}
+					// always grant some xp
+					if (xpToGrant == 0) xpToGrant = 1;
 					mainHero.AddSkillXp(DefaultSkills.Leadership, xpToGrant);
 				}
 
@@ -194,6 +195,32 @@ namespace CheerReloaded {
 				}
 			}
 
+		}
+
+		/// <summary>
+		/// Calculates experience divider and maximum xp multiplier.
+		/// </summary>
+		/// <returns>An array of int, with 0 index as divider and 1 index as multiplier. Zero values on invaild leadership.</returns>
+		private int[] CalculateXpDividerAndMaxXP(int leadership) {
+			if (leadership.IsInRange(0, 15)) {
+				return new int[] { 6, 1 };
+			} 
+			if (leadership.IsInRange(16, 40)) {
+				return new int[] { 5, 2 };
+			}
+			if (leadership.IsInRange(41, 75)) {
+				return new int[] { 4, 3 };
+			}
+			if (leadership.IsInRange(76, 125)) {
+				return new int[] { 3, 4 };
+			}
+			if (leadership.IsInRange(126, 200)) {
+				return new int[] { 2, 5 };
+			}
+			if (leadership.IsInRange(201)) {
+				return new int[] { 1, 6 };
+			}
+			return new int[] { 0, 0 };
 		}
 
 		/// <summary>
