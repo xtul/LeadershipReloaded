@@ -47,11 +47,14 @@ namespace CheerReloaded {
 				return;
 			};
 
+			if (_agent.Team == null) return;
+
 			_agentsInArea = Mission.Current.GetAgentsInRange(_agent.Position.AsVec2, CheerRange)
-											.Where(x => x.Character != null)
-											.Where(x => x.Team.IsFriendOf(_agent.Team));
+											.Where(x => x.Character != null);
+
 			foreach (var a in _agentsInArea) {
 				if (!_canCheer) break;
+				if (!a.IsFriendOf(_agent)) break;
 
 				if (a.GetMorale() < 33f) {
 					_timerToEnableCheering = _missionTimer + 5f;

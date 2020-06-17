@@ -1,4 +1,5 @@
-﻿using TaleWorlds.MountAndBlade;
+﻿using TaleWorlds.Core;
+using TaleWorlds.MountAndBlade;
 
 namespace CheerReloaded {
 	internal class CheerAIBehaviour : MissionBehaviour {
@@ -16,10 +17,11 @@ namespace CheerReloaded {
 			if (agent == null) return;
 			if (agent.IsMount) return;
 			if (agent.IsMainAgent) return;
+			if (agent.Character == null) return;
 
 			if (agent.IsHero) {
 				agent.AddComponent(new CheerAIComponent(_config, agent, _common));
 			}
-		}
+ 		}
 	}
 }
