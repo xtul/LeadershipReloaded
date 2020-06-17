@@ -13,6 +13,7 @@ namespace CheerReloaded {
 		public int _cheerAmount;
 
 		private readonly Config _config;
+		private readonly float _initialMorale;
 		private readonly int _leadership;
 		private readonly Agent _agent;
 		private readonly CheerCommonMethods _common;
@@ -32,6 +33,7 @@ namespace CheerReloaded {
 			_leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 			_cheerAmount = _config.AI.BaselineCheerAmount;
 			_cheerAmount += Math.DivRem(_leadership, _config.CheersPerXLeadershipLevels, out _);
+			_initialMorale = _agent.GetMorale();
 			CheerRange = (_leadership / 2).Clamp(50, 200);
 			_canCheer = false;
 			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + MBRandom.RandomInt(8, 13);
@@ -53,19 +55,15 @@ namespace CheerReloaded {
 											.Where(x => x.IsHuman)
 											.Where(x => x.IsFriendOf(_agent));
 
-			var averageMorale = _agentsInArea.Sum(x => x.GetMorale()) / _agentsInArea.Count();
-			Helpers.Say($"Average morale = {averageMorale}");
+			var lowestMorale = _agentsInArea.Min(x => x.GetMorale());
+			Helpers.Say($"Average morale = {lowestMorale}");
 
 			foreach (var a in _agentsInArea) {
 				if (!_canCheer) break;
 				if (a.IsEnemyOf(_agent)) break;
 
-				var playerPos = Agent.Main.Position;
-
-				if (averageMorale < 50f) {					
+				if (lowestMorale < _initialMorale - 3f) {					
 					Cheer();					
-				} else if (a.IsCharging && a.GetPathDistanceToPoint(ref playerPos) < 45f) {
-					Cheer();
 				}
 			}
 		}
