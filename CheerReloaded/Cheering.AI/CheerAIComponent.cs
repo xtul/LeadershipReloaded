@@ -56,7 +56,6 @@ namespace CheerReloaded {
 											.Where(x => x.IsFriendOf(_agent));
 
 			var lowestMorale = _agentsInArea.Min(x => x.GetMorale());
-			Helpers.Say($"Average morale = {lowestMorale}");
 
 			foreach (var a in _agentsInArea) {
 				if (!_canCheer) break;
