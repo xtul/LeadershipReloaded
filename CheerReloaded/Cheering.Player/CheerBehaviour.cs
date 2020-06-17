@@ -46,20 +46,22 @@ namespace CheerReloaded {
 		/// appear here, such as user input handling.
 		/// </summary>
 		public override async void OnMissionTick(float dt) {
-			if (Input.IsKeyReleased((InputKey)_config.KeyCode) && _canCheer) {
-				if (Mission.Current.Mode != MissionMode.Battle) return;
+			if (Agent.Main != null) {
+				if (Input.IsKeyReleased((InputKey)_config.KeyCode) && _canCheer) {
+					if (Mission.Current.Mode != MissionMode.Battle) return;
 
-				_canCheer = false;
+					_canCheer = false;
 
-				if (!Mission.Current.MissionEnded()) {
-					await DoInCombatCheer();
-					await Task.Delay(TimeSpan.FromSeconds(3));
-				} else {
-					await DoVictoryCheer();
-					await Task.Delay(TimeSpan.FromSeconds(1));
+					if (!Mission.Current.MissionEnded()) {
+						await DoInCombatCheer();
+						await Task.Delay(TimeSpan.FromSeconds(3));
+					} else {
+						await DoVictoryCheer();
+						await Task.Delay(TimeSpan.FromSeconds(1));
+					}
+
+					_canCheer = true;
 				}
-
-				_canCheer = true;
 			}
 		}
 

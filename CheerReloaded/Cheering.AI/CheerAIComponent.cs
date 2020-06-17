@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 namespace CheerReloaded {
 	internal class CheerAIComponent : AgentComponent {
-		public int CheerRange = 50;
+		public int CheerRange;
 		public int _cheerAmount;
 
 		private readonly Config _config;
@@ -16,7 +17,6 @@ namespace CheerReloaded {
 		private readonly Agent _agent;
 		private readonly CheerCommonMethods _common;
 		private float _moraleChange;
-		private float _missionTimer;
 		private float _timerToEnableCheering;
 		private bool _canCheer;
 		private IEnumerable<Agent> _agentsInArea;
@@ -32,13 +32,13 @@ namespace CheerReloaded {
 			_leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 			_cheerAmount = _config.AI.BaselineCheerAmount;
 			_cheerAmount += Math.DivRem(_leadership, _config.CheersPerXLeadershipLevels, out _);
-			_canCheer = true;
-			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + 20f; // start a bit later
+			CheerRange = (_leadership / 2).Clamp(50, 200);
+			_canCheer = false;
+			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + MBRandom.RandomInt(8, 13);
 		}
 
 		protected override void OnTickAsAI(float dt) {
-			_missionTimer = MBCommon.TimeType.Mission.GetTime();
-			if (_missionTimer > _timerToEnableCheering)
+			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering)
 				_canCheer = true;
 
 			if (!_canCheer) return;
@@ -50,19 +50,22 @@ namespace CheerReloaded {
 			if (_agent.Team == null) return;
 
 			_agentsInArea = Mission.Current.GetAgentsInRange(_agent.Position.AsVec2, CheerRange)
-											.Where(x => x.Character != null);
+											.Where(x => x.IsHuman)
+											.Where(x => x.IsFriendOf(_agent));
+
+			var averageMorale = _agentsInArea.Sum(x => x.GetMorale()) / _agentsInArea.Count();
+			Helpers.Say($"Average morale = {averageMorale}");
 
 			foreach (var a in _agentsInArea) {
 				if (!_canCheer) break;
-				if (!a.IsFriendOf(_agent)) break;
+				if (a.IsEnemyOf(_agent)) break;
 
-				if (a.GetMorale() < 33f) {
-					_timerToEnableCheering = _missionTimer + 5f;
+				var playerPos = Agent.Main.Position;
+
+				if (averageMorale < 50f) {					
+					Cheer();					
+				} else if (a.IsCharging && a.GetPathDistanceToPoint(ref playerPos) < 45f) {
 					Cheer();
-					_canCheer = false;
-					if (_config.AI.DisplayAnnouncement) {
-						Helpers.Announce($"{_agent.Name} cheers, boosting {(_agent.IsFemale ? "her" : "his")} allies' morale!");
-					}
 				}
 			}
 		}
@@ -71,6 +74,13 @@ namespace CheerReloaded {
 		/// Calculates morale changed. This one is stripped down for AI for performance reasons.
 		/// </summary>
 		private void Cheer() {
+			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + MBRandom.RandomInt(4, 7);
+			_canCheer = false;
+
+			if (_config.AI.DisplayAnnouncement) {
+				Helpers.Announce($"{_agent.Name} cheers, boosting {(_agent.IsFemale ? "her" : "his")} allies' morale!");
+			}
+
 			var mCap = _config.AI.MaximumMoralePerAgent;
 			_moraleChange = ((_leadership / 18) + 1f).Clamp(-mCap, mCap);
 
