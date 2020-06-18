@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using TaleWorlds.Library;
 using TaleWorlds.Core;
 using System.IO;
+using SandBox.Source.Missions;
 
 namespace CheerReloaded {
 	public class CheerReloadedSubModule : MBSubModuleBase {
@@ -38,10 +39,14 @@ namespace CheerReloaded {
 			if (_config.AI.Enabled) {
 				mission.AddMissionBehaviour(new CheerAIBehaviour(_config, _common));
 			}
+			if (_config.ResponsiveOrders.Enabled) {
+				mission.AddMissionBehaviour(new CheerResponsiveOrdersBehaviour(_config));
+			}
 		}
 
 		private void CorrectConfig() {
 			_config.CheersPerXLeadershipLevels.Clamp(1, 500);
+			_config.AI.DeathMoraleDecrease.Clamp(1, 100);
 		}
 	}
 }

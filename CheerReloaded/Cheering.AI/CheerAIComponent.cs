@@ -33,15 +33,18 @@ namespace CheerReloaded {
 			_leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 			_cheerAmount = _config.AI.BaselineCheerAmount;
 			_cheerAmount += Math.DivRem(_leadership, _config.CheersPerXLeadershipLevels, out _);
-			_initialMorale = _agent.GetMorale();
+			_initialMorale = _agent?.GetMorale() ?? 0;
 			CheerRange = (_leadership / 2).Clamp(50, 200);
 			_canCheer = false;
 			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + MBRandom.RandomInt(8, 13);
 		}
 
 		protected override void OnTickAsAI(float dt) {
-			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering)
+			if (Mission.Current != null && Mission.Current.Mode != MissionMode.Battle) return;
+			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering) {
 				_canCheer = true;
+			}
+			if (_agent.Team == null) return;
 
 			if (!_canCheer) return;
 			if (_cheerAmount == 0) {
@@ -49,20 +52,26 @@ namespace CheerReloaded {
 				return;
 			};
 
-			if (_agent.Team == null) return;
+
+			var lowestMorale = _initialMorale; // default
 
 			_agentsInArea = Mission.Current.GetAgentsInRange(_agent.Position.AsVec2, CheerRange)
-											.Where(x => x.IsHuman)
+											.Where(x => x != null)
+											.Where(x => x.Character != null && x.IsHuman)
 											.Where(x => x.IsFriendOf(_agent));
 
-			var lowestMorale = _agentsInArea.Min(x => x.GetMorale());
+			if (_agentsInArea.Count() > 0) {
+				lowestMorale = _agentsInArea.Min(x => x.GetMorale());
+			}
 
-			foreach (var a in _agentsInArea) {
-				if (!_canCheer) break;
-				if (a.IsEnemyOf(_agent)) break;
+			if (_agentsInArea.Count() > 0) {
+				foreach (var a in _agentsInArea) {
+					if (!_canCheer) break;
+					if (a.IsEnemyOf(_agent)) break;
 
-				if (lowestMorale < _initialMorale - 3f) {					
-					Cheer();					
+					if (lowestMorale < _initialMorale - 3f) {					
+						Cheer();					
+					}
 				}
 			}
 		}

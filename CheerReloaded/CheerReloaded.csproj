@@ -167,6 +167,7 @@
     </Reference>
     <Reference Include="TaleWorlds.ObjectSystem">
       <HintPath>..\..\..\..\..\..\..\Steam\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ObjectSystem.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="TaleWorlds.PlatformService">
       <HintPath>C:\Steam\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.PlatformService.dll</HintPath>
@@ -261,6 +262,7 @@
     <Compile Include="Cheering.Common\CheerCommonMethods.cs" />
     <Compile Include="Cheering.Player\CheerBehaviour.cs" />
     <Compile Include="CheerReloadedSubModule.cs" />
+    <Compile Include="Cheering.ResponsiveOrders\CheerResponsiveOrdersBehaviour.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

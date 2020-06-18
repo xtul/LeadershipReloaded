@@ -29,5 +29,15 @@
 		<MaximumMoralePerAgent>7</MaximumMoralePerAgent>
 		<!-- determines whether to display "X cheers, boosting..." announcemend on the top of the screen -->
 		<DisplayAnnouncement>true</DisplayAnnouncement>
+		<!-- determines whether AI commander death will reduce morale of nearby soldiers -->
+		<ImpactfulDeath>true</ImpactfulDeath>
+		<!-- if above is true, how much morale should nearby soldiers lose? range: 1 - 100 -->
+		<DeathMoraleDecrease>3</DeathMoraleDecrease>
 	</AI>
+
+	<!-- Responsive Orders section -->
+	<ResponsiveOrders>
+		<!-- if set to true, units you make orders to will audibly react -->
+		<Enabled>true</Enabled>
+	</ResponsiveOrders>
 </Config>

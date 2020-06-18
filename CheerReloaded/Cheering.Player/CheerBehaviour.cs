@@ -104,32 +104,36 @@ namespace CheerReloaded {
 				Helpers.Say("You wanted to perform a war cry, but felt you would only make a fool of yourself.");
 				return;
 			}
+			if (Agent.Main == null) return;
+			if (Agent.Main.Team == null) return;
+			
+
+			var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
+			var playerAlliedAgentsCount = Mission.Current.Teams.Player?.ActiveAgents.Count ?? 0;
+			var playerEnemyAgentsCount = Mission.Current.Teams.PlayerEnemy?.ActiveAgents.Count ?? 0;
+			float advantageBonus = ((playerAlliedAgentsCount
+								 - playerEnemyAgentsCount)
+								 / 12)
+								 .Clamp(-2, 2);
+
+			var mCap = _config.MaximumMoralePerAgent;
+			_moraleChange = ((leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap);
+			_effectRadius = (leadership / 2).Clamp(25, 200);
+
+			if (_config.PreventNegativeMorale) {
+				_moraleChange.Clamp(0, 100);
+			}
 
 			try {
-				var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
-				var playerAlliedAgentsCount = Mission.Current.Teams.Player?.ActiveAgents.Count ?? 0;
-				var playerEnemyAgentsCount = Mission.Current.Teams.PlayerEnemy?.ActiveAgents.Count ?? 0;
-				float advantageBonus = ((playerAlliedAgentsCount
-									 - playerEnemyAgentsCount)
-									 / 12)
-									 .Clamp(-2, 2);
-
-				var mCap = _config.MaximumMoralePerAgent;
-				_moraleChange = ((leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap);
-				_effectRadius = (leadership / 2).Clamp(25, 200);
-
-				if (_config.PreventNegativeMorale) {
-					_moraleChange.Clamp(0, 100);
-				}
-
 				var agentsList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
+									.Where(x => x != null)
 									.Where(x => x.IsMount == false)
 									.Where(x => x.Character != null)
 									.Where(x => x.Health > 0)
 									.Where(x => x.IsMainAgent == false);
 
-				var friendlyAgentsList = agentsList.Where(x => x.Team.IsFriendOf(Agent.Main.Team)).ToList();
-				var enemyAgentsList = agentsList.Where(x => x.Team.IsEnemyOf(Agent.Main.Team)).ToList();
+				var friendlyAgentsList = agentsList.Where(x => x != null && x.IsFriendOf(Agent.Main)).ToList();
+				var enemyAgentsList = agentsList.Where(x => x != null && x.IsEnemyOf(Agent.Main)).ToList();
 
 				var totalFriendlyMoraleApplied = 0;
 				var totalEnemyMoraleApplied = 0;

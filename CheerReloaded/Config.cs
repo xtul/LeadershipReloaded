@@ -9,6 +9,7 @@
 		public float MaximumMoralePerAgent { get; set; }
 		public bool DebugMode { get; set; }
 		public AI AI { get; set; }
+		public ResponsiveOrders ResponsiveOrders { get; set; }
 	}
 
 	public class AI {
@@ -17,5 +18,11 @@
 		public int CheersPerXLeadershipLevels { get; set; }
 		public int MaximumMoralePerAgent { get; set; }
 		public bool DisplayAnnouncement { get; set; }
+		public bool ImpactfulDeath { get; set; }
+		public int DeathMoraleDecrease { get; set; }
+	}
+
+	public class ResponsiveOrders {
+		public bool Enabled { get; set; }
 	}
 }
