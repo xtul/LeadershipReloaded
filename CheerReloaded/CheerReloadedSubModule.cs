@@ -15,11 +15,11 @@ namespace CheerReloaded {
 		public CheerCommonMethods _common;
 
 		/// <summary>
-		/// Entry point of the mod. When a mission is initialized, it reads user config,
-		/// serializes it into Config object and adds Cheer behaviour to a mission.
+		/// Entry point of the mod. When a mission is initialized and is a field battle, 
+		/// it reads user config, serializes it into Config object and adds Cheer behaviour 
+		/// to the mission.
 		/// </summary>
 		public override void OnMissionBehaviourInitialize(Mission mission) {
-			if (!mission.IsFieldBattle) return;
 			_common = new CheerCommonMethods();
 
 			var serializer = new XmlSerializer(typeof(Config));
@@ -29,6 +29,9 @@ namespace CheerReloaded {
 
 			if (_config.DebugMode == true) {
 				Helpers.Log("Cheer Reloaded activated.");
+			}
+			if (!_config.DebugMode) {
+				if (!mission.IsFieldBattle) return;
 			}
 
 			CorrectConfig();

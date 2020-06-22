@@ -24,5 +24,6 @@
 
 	public class ResponsiveOrders {
 		public bool Enabled { get; set; }
+		public int BaselineResponseCount { get; set; }
 	}
 }

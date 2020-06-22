@@ -10,7 +10,10 @@ namespace CheerReloaded {
 
 		private readonly Config _config;
 		private OrderController _orderController;
+		private int _playerLeadership;
 		private readonly Random _rng;
+		private int _affirmativeAgentCounter;
+		private int _affirmativeAgentMaxCount;
 
 		private OrderType _orderType;
 
@@ -24,7 +27,10 @@ namespace CheerReloaded {
 			if (banner == null) return;
 
 			if (agent == Agent.Main) {
-				_orderController = Agent.Main.Team?.PlayerOrderController ?? null;
+				_orderController = agent.Team?.PlayerOrderController ?? null;
+				_playerLeadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
+				_affirmativeAgentMaxCount = _config.ResponsiveOrders.BaselineResponseCount 
+											+ (int)Math.Round(_playerLeadership / 25f);
 				// we are waiting a while before subscribing to events - otherwise 
 				// the initial unit selection will trigger cheering and it feels awkward
 				await Task.Delay(1000);
@@ -34,12 +40,15 @@ namespace CheerReloaded {
 		}
 
 		private async void Affirmative(Agent a) {
-			// ignore half of the formation
-			if (_rng.Next(0, 100).IsInRange(0, 50)) {
-				return;
-			}
+			_affirmativeAgentCounter++;
+			
+			if (_affirmativeAgentCounter > _affirmativeAgentMaxCount) return;
 
-			await Task.Delay(_rng.Next(600, 800));
+			var agentPosition = a.Position;
+			var distanceToPlayer = Agent.Main.GetPathDistanceToPoint(ref agentPosition);
+			var timeToRespond = (int)(_rng.Next(900, 1200) * (distanceToPlayer / 10)).Clamp(900, 2000);
+
+			await Task.Delay(timeToRespond);
 
 			// ;_;
 			switch (_orderType) {
@@ -101,21 +110,34 @@ namespace CheerReloaded {
 					a.MakeVoice(SkinVoiceManager.VoiceType.Mount, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					break;
 				case OrderType.Move:
-					a.MakeVoice(SkinVoiceManager.VoiceType.Move, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+					a.MakeVoice(SkinVoiceManager.VoiceType.Follow, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					break;
-				default: // eh idk i'll just yell so he stops bothering me
-					a.MakeVoice(SkinVoiceManager.VoiceType.Yell, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+				default: 
+					a.MakeVoice(SkinVoiceManager.VoiceType.Grunt, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 					break;
 			}
 		}
 
-		private void Grunt(Agent a) {
+		private async void Grunt(Agent a) {
+			if (_affirmativeAgentCounter > _affirmativeAgentMaxCount*2) return;
+
+			var agentPosition = a.Position;
+			var distanceToPlayer = Agent.Main.GetPathDistanceToPoint(ref agentPosition);
+			if (distanceToPlayer > 35f) return;
+
+			_affirmativeAgentCounter++;
+
+			var timeToRespond = (int)(_rng.Next(700, 900) * (distanceToPlayer / 10)).Clamp(500, 1200);
+
+			await Task.Delay(timeToRespond);
+
 			a.MakeVoice(SkinVoiceManager.VoiceType.Everyone, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
 		}
 
 		private void ReactToChangedFormations() {
 			foreach (var formation in _orderController.SelectedFormations) {
 				formation.ApplyActionOnEachUnit(Grunt);
+				_affirmativeAgentCounter = 0;
 			}
 		}
 
@@ -123,6 +145,7 @@ namespace CheerReloaded {
 			_orderType = orderType;
 			foreach (var formation in appliedFormations) {
 				formation.ApplyActionOnEachUnit(Affirmative);
+				_affirmativeAgentCounter = 0;
 			}
 		}
 	}

@@ -39,5 +39,7 @@
 	<ResponsiveOrders>
 		<!-- if set to true, units you make orders to will audibly react -->
 		<Enabled>true</Enabled>
+		<!-- the minimum amount of troops that will reply to your orders (afterwards it's + Leadership / 25) -->
+		<BaselineResponseCount>8</BaselineResponseCount>
 	</ResponsiveOrders>
 </Config>
