@@ -62,9 +62,6 @@ namespace CheerReloaded {
 
 			if (_agentsInArea.Count() > 0) {
 				lowestMorale = _agentsInArea.Min(x => x.GetMorale());
-			}
-
-			if (_agentsInArea.Count() > 0) {
 				foreach (var a in _agentsInArea) {
 					if (!_canCheer) break;
 					if (a.IsEnemyOf(_agent)) break;
