@@ -106,7 +106,6 @@ namespace CheerReloaded {
 			}
 			if (Agent.Main == null) return;
 			if (Agent.Main.Team == null) return;
-			
 
 			var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 			var playerAlliedAgentsCount = Mission.Current.Teams.Player?.ActiveAgents.Count ?? 0;

@@ -19,6 +19,7 @@ namespace CheerReloaded {
 		/// serializes it into Config object and adds Cheer behaviour to a mission.
 		/// </summary>
 		public override void OnMissionBehaviourInitialize(Mission mission) {
+			if (!mission.IsFieldBattle) return;
 			_common = new CheerCommonMethods();
 
 			var serializer = new XmlSerializer(typeof(Config));
