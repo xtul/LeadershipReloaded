@@ -7,10 +7,12 @@ namespace CheerReloaded {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
+		private readonly Strings _strings;
 		private readonly CheerCommonMethods _common;
 
-		public CheerAIBehaviour(Config config, CheerCommonMethods common) {
+		public CheerAIBehaviour(Config config, CheerCommonMethods common, Strings strings) {
 			_config = config;
+			_strings = strings;
 			_common = common;
 		}
 
@@ -21,7 +23,7 @@ namespace CheerReloaded {
 			if (agent.Character == null) return;
 
 			if (agent.IsHero) {
-				agent.AddComponent(new CheerAIComponent(_config, agent, _common));
+				agent.AddComponent(new CheerAIComponent(_config, agent, _common, _strings));
 				if (_config.AI.ImpactfulDeath) {
 					agent.OnAgentHealthChanged += OnHitPointsChanged;
 				}
@@ -43,7 +45,13 @@ namespace CheerReloaded {
 					a.SetMorale(curMorale - 5f);
 				}
 
-				Helpers.Announce($"{agent.Name} has fallen. {(agent.IsFemale ? "Her" : "His" )} units receive -{_config.AI.DeathMoraleDecrease} morale.");
+				Helpers.Announce(_strings.Lord.Died
+								.Replace("$NAME$", agent.Name)
+								.Replace("$HISHERUPPER$", agent.IsFemale ? "Her" : "His")
+								.Replace("$HISHERLOWER$", agent.IsFemale ? "her" : "his")
+								.Replace("$MORALEHIT$", _config.AI.DeathMoraleDecrease.ToString())
+
+				);
 			}
 		}
 	}

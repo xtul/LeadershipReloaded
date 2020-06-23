@@ -1,0 +1,55 @@
+﻿<Strings>
+	<Failed>
+		You wanted to perform a war cry, but felt you would only make a fool of yourself.
+	</Failed>
+	<NoEffect>
+		You failed to affect any soldiers' morale.
+	</NoEffect>
+	<CheerCounter>
+		You can cheer $COUNT$ times.
+	</CheerCounter>
+	<EnemyMoraleEffect>
+		You reduced each enemies morale by {_moraleChange / 2}, {totalEnemyMoraleApplied} in total.
+	</EnemyMoraleEffect>
+
+	<Friendly>
+		<PositiveMorale>
+			Each party member in the area received $AGENTMORALE$ morale, $TOTALMORALE$ in total.
+		</PositiveMorale>
+		<NegativeMorale>
+			Your own soldiers felt demoralized by your battle cries. $AGENTMORALE$ for each, $TOTALMORALE$ in total.
+		</NegativeMorale>
+	</Friendly>
+	<Enemy>
+		<PositiveMorale>
+			This caused nearby enemies to gain $TOTALMORALE$ morale.
+		</PositiveMorale>
+		<NegativeMorale>
+			In addition, each enemy lost $AGENTMORALE$ morale, $TOTALMORALE$ in total.
+		</NegativeMorale>
+	</Enemy>
+
+	<!-- 
+		$HISHERUPPER$ - "Her", "His"
+		$HISHERLOWER$ - "her", "his"
+	-->
+	<Lord>
+		<Cheered>
+			$NAME$ cheers, boosting $HISHERLOWER$ allies' morale!
+		</Cheered>
+		<Died>
+			$NAME$ has fallen. $HISHERUPPER$ units receive -$MORALEHIT$ morale.
+		</Died>
+	</Lord>
+
+	<InvalidKeyCode>
+		Provided key code in config is invalid. Reverted to 47 (V).
+	</InvalidKeyCode>
+
+	<!-- debug -->
+	<Debug>
+		<LoadingSuccessful>
+			Cheering Reloaded activated.
+		</LoadingSuccessful>
+	</Debug>
+</Strings>

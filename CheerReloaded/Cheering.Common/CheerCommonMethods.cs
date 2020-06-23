@@ -70,12 +70,14 @@ namespace CheerReloaded {
 		/// <summary>
 		/// Applies morale changes.
 		/// </summary>
-		/// <param name="a">An agent to apply morale changes to.</param>
-		/// <param name="inverted">Inverts morale amount, i.e. 3 morale turns into -3 morale</param>
-		/// <returns>Amount of morale that was applied.</returns>
-		public int ApplyMoraleChange(Agent a, float moraleChange, bool inverted = false, bool noNegativeMorale = false) {
+		/// <param name="a">An agent to grant morale to.</param>
+		/// <param name="moraleChange">How much morale to add?</param>
+		/// <param name="isEnemyOfCheerer">If you grant morale to an enemy, use this. It halves the amount of morale and caps bottom morale value.</param>
+		/// <param name="noNegativeMorale">Defines whether </param>
+		/// <returns>Amount of morale that was applied to an agent.</returns>
+		public int ApplyMoraleChange(Agent a, float moraleChange, bool isEnemyOfCheerer = false, bool noNegativeMorale = false) {
 			var currentMorale = a.GetMorale();
-			if (inverted) {
+			if (isEnemyOfCheerer) {
 				if (currentMorale < 38)
 					return 0;
 				var invertedMorale = moraleChange / 2;

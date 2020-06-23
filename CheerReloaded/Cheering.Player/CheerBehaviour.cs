@@ -17,14 +17,16 @@ namespace CheerReloaded {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
+		private readonly Strings _strings;
 		private readonly CheerCommonMethods _common;
 		private float _effectRadius;
 		private int _moraleChange;
 		private int _cheerAmount;
 		private bool _canCheer;
 
-		public CheerBehaviour(Config config, CheerCommonMethods common) {
+		public CheerBehaviour(Config config, CheerCommonMethods common, Strings strings) {
 			_config = config;
+			_strings = strings;
 			_canCheer = true;
 			_common = common;
 		}
@@ -37,7 +39,7 @@ namespace CheerReloaded {
 				_cheerAmount = _config.BaselineCheerAmount;
 				var leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 				_cheerAmount += Math.DivRem(leadership, _config.CheersPerXLeadershipLevels, out _);
-				Helpers.Say($"You can cheer {_cheerAmount} times.");
+				Helpers.Say(_strings.CheerCounter.Replace("$COUNT$", _cheerAmount.ToString()));
 			}
 		}
 
@@ -101,7 +103,7 @@ namespace CheerReloaded {
 		/// </summary>
 		private async Task DoInCombatCheer() {
 			if (_cheerAmount < 1) {
-				Helpers.Say("You wanted to perform a war cry, but felt you would only make a fool of yourself.");
+				Helpers.Say(_strings.Failed);
 				return;
 			}
 			if (Agent.Main == null) return;
@@ -176,19 +178,33 @@ namespace CheerReloaded {
 
 				if (_config.ReportMoraleChange) {
 					if (totalFriendlyMoraleApplied > 0) {
-						Helpers.Say($"Each party member in the area received {_moraleChange} morale, {totalFriendlyMoraleApplied} in total.");
+						Helpers.Say(_strings.Friendly.PositiveMorale
+								.Replace("$AGENTMORALE$", _moraleChange.ToString())
+								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString())
+						);
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
-							Helpers.Say($"In addition, each enemy lost {_moraleChange / 2} morale, {totalEnemyMoraleApplied} in total.");
+							Helpers.Say(_strings.Enemy.NegativeMorale
+									.Replace("$AGENTMORALE$", (_moraleChange / 2).ToString())
+									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
+							);
 						}
 					} else if (totalFriendlyMoraleApplied < 0) {
-						Helpers.Say($"Your own soldiers felt demoralized by your battle cries. {_moraleChange} for each, {totalFriendlyMoraleApplied} in total.");
+						Helpers.Say(_strings.Friendly.NegativeMorale
+								.Replace("$AGENTMORALE$", _moraleChange.ToString())
+								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString())
+						);
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
-							Helpers.Say($"This caused nearby enemies to gain {totalEnemyMoraleApplied} morale.");
+							Helpers.Say(_strings.Enemy.PositiveMorale
+									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
+							);
 						}
 					} else if (totalEnemyMoraleApplied > 0) {
-						Helpers.Say($"You reduced each enemies morale by {_moraleChange / 2}, {totalEnemyMoraleApplied} in total.");
+						Helpers.Say(_strings.EnemyMoraleEffect
+								.Replace("$AGENTMORALE$", (_moraleChange / 2).ToString())
+								.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
+						);
 					} else {
-						Helpers.Say("You failed to affect any soldiers' morale.");
+						Helpers.Say(_strings.NoEffect);
 						_cheerAmount++;
 					}
 				} else {

@@ -13,6 +13,7 @@ namespace CheerReloaded {
 		public int _cheerAmount;
 
 		private readonly Config _config;
+		private readonly Strings _strings;
 		private readonly float _initialMorale;
 		private readonly int _leadership;
 		private readonly Agent _agent;
@@ -26,8 +27,9 @@ namespace CheerReloaded {
 		/// <summary>
 		/// Allows AI to cheer under almost the same rules as the player.
 		/// </summary>
-		public CheerAIComponent(Config config, Agent agent, CheerCommonMethods common) : base(agent) {
+		public CheerAIComponent(Config config, Agent agent, CheerCommonMethods common, Strings strings) : base(agent) {
 			_config = config;
+			_strings = strings;
 			_agent = agent;
 			_common = common;
 			_leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
@@ -83,7 +85,12 @@ namespace CheerReloaded {
 			_canCheer = false;
 
 			if (_config.AI.DisplayAnnouncement) {
-				Helpers.Announce($"{_agent.Name} cheers, boosting {(_agent.IsFemale ? "her" : "his")} allies' morale!");
+				//Helpers.Announce($"{_agent.Name} cheers, boosting {(_agent.IsFemale ? "her" : "his")} allies' morale!");
+				Helpers.Announce(_strings.Lord.Cheered
+								.Replace("$NAME$", _agent.Name)
+								.Replace("$HISHERUPPER$", _agent.IsFemale ? "Her" : "His")
+								.Replace("$HISHERLOWER$", _agent.IsFemale ? "her" : "his")
+				);
 			}
 
 			var playerPower = 0f;

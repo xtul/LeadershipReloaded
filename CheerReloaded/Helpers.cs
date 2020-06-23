@@ -1,24 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.TwoDimension;
 
 namespace CheerReloaded {
 	public static class Helpers {
 		public static void Say(string text) {
+			text = CleanupText(text);
 			InformationManager.DisplayMessage(new InformationMessage(text, new TaleWorlds.Library.Color(0.437f, 0.625f, 1f)));
 		}
 
 		public static void Log(string text) {
+			text = CleanupText(text);
 			InformationManager.DisplayMessage(new InformationMessage(text, new TaleWorlds.Library.Color(0.5f, 0.5f, 0.5f)));
 		}
 
 		public static void Announce(string text) {
 			InformationManager.AddQuickInformation(new TextObject(text));
+		}
+
+		private static string CleanupText(string t) {
+			return t.Trim().Replace("\n", "").Replace("\r", "");
 		}
 
 		// https://stackoverflow.com/a/2683487/
@@ -55,6 +64,20 @@ namespace CheerReloaded {
 			var minValid = min == null || (minInclusive && value.CompareTo(min.Value) >= 0) || (!minInclusive && value.CompareTo(min.Value) > 0);
 			var maxValid = max == null || (maxInclusive && value.CompareTo(max.Value) <= 0) || (!maxInclusive && value.CompareTo(max.Value) < 0);
 			return minValid && maxValid;
+		}
+
+		/// <summary>
+		/// Reads provided XML and serializes it into the specified <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">A class to serialize XML into.</typeparam>
+		/// <param name="xml">The name of XML file without .xml.</param>
+		/// <returns></returns>
+		public static T ReadAndStoreAsType<T>(string xml) where T : class {
+			var serializer = new XmlSerializer(typeof(T));
+			var reader = new StreamReader(BasePath.Name + $"Modules/CheerReloaded/bin/Win64_Shipping_Client/{xml}.xml");
+			var result = (T)serializer.Deserialize(reader);
+			reader.Close();
+			return result;
 		}
 	}
 }
