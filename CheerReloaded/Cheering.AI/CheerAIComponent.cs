@@ -86,8 +86,23 @@ namespace CheerReloaded {
 				Helpers.Announce($"{_agent.Name} cheers, boosting {(_agent.IsFemale ? "her" : "his")} allies' morale!");
 			}
 
-			var mCap = _config.AI.MaximumMoralePerAgent;
-			_moraleChange = ((_leadership / 18) + 1f).Clamp(-mCap, mCap);
+			var playerPower = 0f;
+			var enemyPower = 0f;
+			var mCap = _config.MaximumMoralePerAgent;
+
+			foreach (var team in Mission.Current.Teams) {
+				foreach (var f in team.Formations) {
+					if (f.Team.Side == Agent.Main.Team.Side) {
+						playerPower += f.GetFormationPower();
+					} else {
+						enemyPower += f.GetFormationPower();
+					}
+				}
+			}
+
+			float advantageBonus = ((playerPower - enemyPower) / 20).Clamp(mCap / 2 * -1, mCap / 2);
+
+			_moraleChange = (int)Math.Round(((_leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap));
 
 			if (_config.PreventNegativeMorale) {
 				_moraleChange.Clamp(0, 100);
@@ -101,7 +116,7 @@ namespace CheerReloaded {
 
 			foreach (var a in friendlyAgentsList) {
 				_common.ApplyCheerEffects(a, _moraleChange);
-				totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange);
+				totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, noNegativeMorale: _config.PreventNegativeMorale);
 			}
 
 			if (_leadership >= _config.EnemyMoraleLeadershipThreshold) {
