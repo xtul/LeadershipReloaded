@@ -7,6 +7,7 @@
 		public bool PreventNegativeMorale { get; set; }
 		public int EnemyMoraleLeadershipThreshold { get; set; }
 		public float MaximumMoralePerAgent { get; set; }
+		public float MaximumAdvantageMorale { get; set; }
 		public bool DebugMode { get; set; }
 		public AI AI { get; set; }
 		public ResponsiveOrders ResponsiveOrders { get; set; }
@@ -17,6 +18,7 @@
 		public int BaselineCheerAmount { get; set; }
 		public int CheersPerXLeadershipLevels { get; set; }
 		public int MaximumMoralePerAgent { get; set; }
+		public int MaximumAdvantageMorale { get; set; }
 		public bool DisplayAnnouncement { get; set; }
 		public bool ImpactfulDeath { get; set; }
 		public int DeathMoraleDecrease { get; set; }

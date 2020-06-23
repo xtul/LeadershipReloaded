@@ -12,7 +12,9 @@
 	<!-- how high your leadership has to be for it to affect enemies? -->
 	<EnemyMoraleLeadershipThreshold>75</EnemyMoraleLeadershipThreshold>
 	<!-- morale change will never exceed this amount (or it's negative) -->
-	<MaximumMoralePerAgent>5</MaximumMoralePerAgent>
+	<MaximumMoralePerAgent>8</MaximumMoralePerAgent>
+	<!-- a maximum amount of morale that can be granted for battle advantage (or it's negative) -->
+	<MaximumAdvantageMorale>3</MaximumAdvantageMorale>
 	<!-- a key that will apply cheering, default is V (47)
 	full code list: https://pastebin.com/v5Vz84ys -->
 	<KeyCode>47</KeyCode>
@@ -26,7 +28,9 @@
 		<!-- AI receives an additional cheer every X Leadership levels. Values lower than 1 will be set to 1. -->
 		<CheersPerXLeadershipLevels>100</CheersPerXLeadershipLevels>
 		<!-- morale change will never exceed this amount (or it's negative) -->
-		<MaximumMoralePerAgent>7</MaximumMoralePerAgent>
+		<MaximumMoralePerAgent>8</MaximumMoralePerAgent>
+		<!-- a maximum amount of morale that can be granted for battle advantage (or it's negative) -->
+		<MaximumAdvantageMorale>3</MaximumAdvantageMorale>
 		<!-- determines whether to display "X cheers, boosting..." announcemend on the top of the screen -->
 		<DisplayAnnouncement>true</DisplayAnnouncement>
 		<!-- determines whether AI commander death will reduce morale of nearby soldiers -->

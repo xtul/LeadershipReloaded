@@ -88,7 +88,8 @@ namespace CheerReloaded {
 
 			var playerPower = 0f;
 			var enemyPower = 0f;
-			var mCap = _config.MaximumMoralePerAgent;
+			var mCap = _config.AI.MaximumMoralePerAgent;
+			var aCap = _config.AI.MaximumAdvantageMorale;
 
 			foreach (var team in Mission.Current.Teams) {
 				foreach (var f in team.Formations) {
@@ -100,7 +101,7 @@ namespace CheerReloaded {
 				}
 			}
 
-			float advantageBonus = ((playerPower - enemyPower) / 20).Clamp(mCap / 2 * -1, mCap / 2);
+			float advantageBonus = ((playerPower - enemyPower) / 20).Clamp(aCap * -1, aCap);
 
 			_moraleChange = (int)Math.Round(((_leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap));
 
