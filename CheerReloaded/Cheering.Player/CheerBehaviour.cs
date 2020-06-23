@@ -18,8 +18,8 @@ namespace CheerReloaded {
 
 		private readonly Config _config;
 		private readonly CheerCommonMethods _common;
-		private float _moraleChange;
 		private float _effectRadius;
+		private int _moraleChange;
 		private int _cheerAmount;
 		private bool _canCheer;
 
@@ -108,20 +108,25 @@ namespace CheerReloaded {
 			if (Agent.Main.Team == null) return;
 
 			var leadership = Agent.Main.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
-			var playerAlliedAgentsCount = Mission.Current.Teams.Player?.ActiveAgents.Count ?? 0;
-			var playerEnemyAgentsCount = Mission.Current.Teams.PlayerEnemy?.ActiveAgents.Count ?? 0;
-			float advantageBonus = ((playerAlliedAgentsCount
-								 - playerEnemyAgentsCount)
-								 / 12)
-								 .Clamp(-2, 2);
 
+			var playerPower = 0f;
+			var enemyPower = 0f;
 			var mCap = _config.MaximumMoralePerAgent;
-			_moraleChange = ((leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap);
-			_effectRadius = (leadership / 2).Clamp(25, 200);
 
-			if (_config.PreventNegativeMorale) {
-				_moraleChange.Clamp(0, 100);
+			foreach (var team in Mission.Current.Teams) {
+				foreach (var f in team.Formations) {
+					if (f.Team.Side == Agent.Main.Team.Side) {
+						playerPower += f.GetFormationPower();						
+					} else {
+						enemyPower += f.GetFormationPower();
+					}
+				}
 			}
+
+			float advantageBonus = ((playerPower - enemyPower) / 20).Clamp(mCap / 2 *-1, mCap / 2);
+
+			_moraleChange = (int)Math.Round(((leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap));
+			_effectRadius = (leadership / 2).Clamp(25, 200);
 
 			try {
 				var agentsList = Mission.GetAgentsInRange(Agent.Main.Position.AsVec2, _effectRadius)
@@ -142,7 +147,7 @@ namespace CheerReloaded {
 				foreach (var a in friendlyAgentsList) {
 					_common.ApplyCheerEffects(a, _moraleChange);
 					await Task.Delay(MBRandom.RandomInt(0, 9));
-					totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange);
+					totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, noNegativeMorale: _config.PreventNegativeMorale);
 				}
 
 				if (leadership >= _config.EnemyMoraleLeadershipThreshold) {

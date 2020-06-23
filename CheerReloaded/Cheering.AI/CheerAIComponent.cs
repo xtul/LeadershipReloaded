@@ -40,6 +40,8 @@ namespace CheerReloaded {
 		}
 
 		protected override void OnTickAsAI(float dt) {
+			// the trick here is to prevent NullException
+			// when getting the value of Mission.Current.Mode
 			if (Mission.Current != null && Mission.Current.Mode != MissionMode.Battle) return;
 			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering) {
 				_canCheer = true;

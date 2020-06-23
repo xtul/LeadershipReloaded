@@ -12,7 +12,7 @@
 	<!-- how high your leadership has to be for it to affect enemies? -->
 	<EnemyMoraleLeadershipThreshold>75</EnemyMoraleLeadershipThreshold>
 	<!-- morale change will never exceed this amount (or it's negative) -->
-	<MaximumMoralePerAgent>7</MaximumMoralePerAgent>
+	<MaximumMoralePerAgent>5</MaximumMoralePerAgent>
 	<!-- a key that will apply cheering, default is V (47)
 	full code list: https://pastebin.com/v5Vz84ys -->
 	<KeyCode>47</KeyCode>

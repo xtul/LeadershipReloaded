@@ -73,7 +73,7 @@ namespace CheerReloaded {
 		/// <param name="a">An agent to apply morale changes to.</param>
 		/// <param name="inverted">Inverts morale amount, i.e. 3 morale turns into -3 morale</param>
 		/// <returns>Amount of morale that was applied.</returns>
-		public int ApplyMoraleChange(Agent a, float moraleChange, bool inverted = false) {
+		public int ApplyMoraleChange(Agent a, float moraleChange, bool inverted = false, bool noNegativeMorale = false) {
 			var currentMorale = a.GetMorale();
 			if (inverted) {
 				if (currentMorale < 38)
@@ -82,6 +82,9 @@ namespace CheerReloaded {
 				a.SetMorale(currentMorale - invertedMorale);
 				return (int)invertedMorale;
 			} else {
+				if (noNegativeMorale) {
+					if (moraleChange < 0) moraleChange = 0;
+				}
 				a.SetMorale(currentMorale + moraleChange);
 				return (int)moraleChange;
 			}
