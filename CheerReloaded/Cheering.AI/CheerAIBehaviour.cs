@@ -23,7 +23,7 @@ namespace CheerReloaded {
 			if (agent.Character == null) return;
 
 			if (agent.IsHero) {
-				agent.AddComponent(new CheerAIComponent(_config, agent, _common, _strings));
+				agent.AddComponent(new CheerAIComponent(_config, agent, _common, _strings, Agent.Main.Team.Side));
 				if (_config.AI.ImpactfulDeath) {
 					agent.OnAgentHealthChanged += OnHitPointsChanged;
 				}
@@ -41,15 +41,15 @@ namespace CheerReloaded {
 													.Where(x => x.IsFriendOf(agent));
 				
 				foreach (var a in agentsToAffect) {
-					var curMorale = a.GetMorale();
-					a.SetMorale(curMorale - 5f);
+					a.SetMorale(a.GetMorale() - 5f);
 				}
 
-				Helpers.Announce(_strings.Lord.Died
+				Helpers.Announce("{=lord_died}" + _strings.Lord.Died
 								.Replace("$NAME$", agent.Name)
 								.Replace("$HISHERUPPER$", agent.IsFemale ? "Her" : "His")
 								.Replace("$HISHERLOWER$", agent.IsFemale ? "her" : "his")
-								.Replace("$MORALEHIT$", _config.AI.DeathMoraleDecrease.ToString())
+								.Replace("$MORALEHIT$", _config.AI.DeathMoraleDecrease.ToString()),
+								agent.Character
 
 				);
 			}

@@ -1,0 +1,38 @@
+<!--
+	This is a template. If you're running the game in English, 
+	the actual lines can be edited at 
+	"CheerReloaded\bin\Win64_Shipping_Client\strings.xml". 
+-->
+
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="English" />
+  </tags>  
+  <strings>
+	<string id="failed" text="You wanted to perform a war cry, but felt you would only make a fool of yourself." />
+	<string id="noeffect" text="You failed to affect any soldiers' morale." />
+	<string id="cheercounter" text="You can cheer $COUNT$ times." />
+	<string id="enemymoraleeffect" text="You reduced each enemies morale by $AGENTMORALE$, $TOTALMORALE$ in total." />
+	<string id="invalidkeycode" text="Provided key code in config is invalid. Reverted to 47 (V)." />
+
+	<!-- friendly -->
+	<string id="friendly_positivemorale" text="Each party member in the area received $AGENTMORALE$ morale, $TOTALMORALE$ in total." />
+	<string id="friendly_negativemorale" text="Your own soldiers felt demoralized by your battle cries. $AGENTMORALE$ for each, $TOTALMORALE$ in total." />
+
+	<!-- enemy -->
+	<string id="enemy_positivemorale" text="This caused nearby enemies to gain $TOTALMORALE$ morale." />
+	<string id="enemy_negativemorale" text="In addition, each enemy lost $AGENTMORALE$ morale, $TOTALMORALE$ in total." />
+
+	<!-- lord -->
+	<!-- 
+		$HISHERUPPER$ - "Her", "His"
+		$HISHERLOWER$ - "her", "his"
+	-->
+	<string id="lord_cheered" text="$NAME$ cheers, boosting $HISHERLOWER$ allies' morale!" />
+	<string id="lord_died" text="$NAME$ has fallen. $HISHERUPPER$ units receive -$MORALEHIT$ morale." />
+
+	<!-- debug -->
+	<string id="debug_loadingsuccessful" text="Cheering Reloaded activated." />
+  </strings>
+</base>

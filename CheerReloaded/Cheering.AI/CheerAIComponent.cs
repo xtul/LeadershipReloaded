@@ -18,6 +18,7 @@ namespace CheerReloaded {
 		private readonly int _leadership;
 		private readonly Agent _agent;
 		private readonly CheerCommonMethods _common;
+		private readonly BattleSideEnum _playerAgentSide;
 		private float _moraleChange;
 		private float _timerToEnableCheering;
 		private bool _canCheer;
@@ -27,11 +28,14 @@ namespace CheerReloaded {
 		/// <summary>
 		/// Allows AI to cheer under almost the same rules as the player.
 		/// </summary>
-		public CheerAIComponent(Config config, Agent agent, CheerCommonMethods common, Strings strings) : base(agent) {
+		public CheerAIComponent(Config config, Agent agent, CheerCommonMethods common, Strings strings, BattleSideEnum playerAgentSide) : base(agent) {
 			_config = config;
 			_strings = strings;
 			_agent = agent;
 			_common = common;
+			// we expect player side to be provided when component is created because
+			// if the player agent dies, it's data can no longer be accessed
+			_playerAgentSide = playerAgentSide;
 			_leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 			_cheerAmount = _config.AI.BaselineCheerAmount;
 			_cheerAmount += Math.DivRem(_leadership, _config.CheersPerXLeadershipLevels, out _);
@@ -86,10 +90,11 @@ namespace CheerReloaded {
 
 			if (_config.AI.DisplayAnnouncement) {
 				//Helpers.Announce($"{_agent.Name} cheers, boosting {(_agent.IsFemale ? "her" : "his")} allies' morale!");
-				Helpers.Announce(_strings.Lord.Cheered
+				Helpers.Announce("{=lord_cheered}" + _strings.Lord.Cheered
 								.Replace("$NAME$", _agent.Name)
 								.Replace("$HISHERUPPER$", _agent.IsFemale ? "Her" : "His")
-								.Replace("$HISHERLOWER$", _agent.IsFemale ? "her" : "his")
+								.Replace("$HISHERLOWER$", _agent.IsFemale ? "her" : "his"),
+								_agent.Character
 				);
 			}
 
@@ -97,10 +102,9 @@ namespace CheerReloaded {
 			var enemyPower = 0f;
 			var mCap = _config.AI.MaximumMoralePerAgent;
 			var aCap = _config.AI.MaximumAdvantageMorale;
-
 			foreach (var team in Mission.Current.Teams) {
 				foreach (var f in team.Formations) {
-					if (f.Team.Side == Agent.Main.Team.Side) {
+					if (f.Team.Side == _playerAgentSide) {
 						playerPower += f.GetFormationPower();
 					} else {
 						enemyPower += f.GetFormationPower();

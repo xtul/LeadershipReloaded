@@ -9,7 +9,7 @@
 		You can cheer $COUNT$ times.
 	</CheerCounter>
 	<EnemyMoraleEffect>
-		You reduced each enemies morale by {_moraleChange / 2}, {totalEnemyMoraleApplied} in total.
+		You reduced each enemies morale by $AGENTMORALE$, $TOTALMORALE$ in total.
 	</EnemyMoraleEffect>
 
 	<Friendly>

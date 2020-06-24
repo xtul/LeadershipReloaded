@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
-using TaleWorlds.Library;
-using TaleWorlds.Core;
-using System.IO;
-using SandBox.Source.Missions;
-using TaleWorlds.DotNet;
 using static CheerReloaded.Helpers;
 using TaleWorlds.InputSystem;
 
@@ -29,7 +20,7 @@ namespace CheerReloaded {
 			_strings = ReadAndStoreAsType<Strings>("strings");
 
 			if (_config.DebugMode == true) {
-				Log(_strings.Debug.LoadingSuccessful);
+				Log("{=debug_loadingsuccessful}" + _strings.Debug.LoadingSuccessful);
 			}
 			if (!_config.DebugMode) {
 				if (!mission.IsFieldBattle) return;
@@ -60,7 +51,7 @@ namespace CheerReloaded {
 			_config.AI.MaximumMoralePerAgent.Clamp(0, 100);
 
 			if (!Enum.IsDefined(typeof(InputKey), _config.KeyCode)) {
-				Say(_strings.InvalidKeyCode);
+				Say("{=invalidkeycode}" + _strings.InvalidKeyCode);
 				_config.KeyCode = 47;
 			}
 

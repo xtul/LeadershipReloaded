@@ -39,7 +39,7 @@ namespace CheerReloaded {
 				_cheerAmount = _config.BaselineCheerAmount;
 				var leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 				_cheerAmount += Math.DivRem(leadership, _config.CheersPerXLeadershipLevels, out _);
-				Helpers.Say(_strings.CheerCounter.Replace("$COUNT$", _cheerAmount.ToString()));
+				Helpers.Say("{=cheercounter}" + _strings.CheerCounter.Replace("$COUNT$", _cheerAmount.ToString()));
 			}
 		}
 
@@ -103,7 +103,7 @@ namespace CheerReloaded {
 		/// </summary>
 		private async Task DoInCombatCheer() {
 			if (_cheerAmount < 1) {
-				Helpers.Say(_strings.Failed);
+				Helpers.Say("{=failed}" + _strings.Failed);
 				return;
 			}
 			if (Agent.Main == null) return;
@@ -116,15 +116,17 @@ namespace CheerReloaded {
 			var mCap = _config.MaximumMoralePerAgent;
 			var aCap = _config.MaximumAdvantageMorale;
 
-			foreach (var team in Mission.Current.Teams) {
-				foreach (var f in team.Formations) {
-					if (f.Team.Side == Agent.Main.Team.Side) {
-						playerPower += f.GetFormationPower();						
-					} else {
-						enemyPower += f.GetFormationPower();
+			try {
+				foreach (var team in Mission.Current.Teams) {
+					foreach (var f in team.Formations) {
+						if (f.Team.Side == Agent.Main.Team.Side) {
+							playerPower += f.GetFormationPower();						
+						} else {
+							enemyPower += f.GetFormationPower();
+						}
 					}
 				}
-			}
+			} catch { }
 
 			float advantageBonus = ((playerPower - enemyPower) / 20).Clamp(aCap * -1, aCap);
 
@@ -178,33 +180,33 @@ namespace CheerReloaded {
 
 				if (_config.ReportMoraleChange) {
 					if (totalFriendlyMoraleApplied > 0) {
-						Helpers.Say(_strings.Friendly.PositiveMorale
+						Helpers.Say("{=friendly_positivemorale}" + _strings.Friendly.PositiveMorale
 								.Replace("$AGENTMORALE$", _moraleChange.ToString())
 								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString())
 						);
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
-							Helpers.Say(_strings.Enemy.NegativeMorale
+							Helpers.Say("{=enemy_negativemorale}" + _strings.Enemy.NegativeMorale
 									.Replace("$AGENTMORALE$", (_moraleChange / 2).ToString())
 									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
 							);
 						}
 					} else if (totalFriendlyMoraleApplied < 0) {
-						Helpers.Say(_strings.Friendly.NegativeMorale
+						Helpers.Say("{=friendly_negativemorale}" + _strings.Friendly.NegativeMorale
 								.Replace("$AGENTMORALE$", _moraleChange.ToString())
 								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString())
 						);
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
-							Helpers.Say(_strings.Enemy.PositiveMorale
+							Helpers.Say("{=friendly_positivemorale}" + _strings.Enemy.PositiveMorale
 									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
 							);
 						}
 					} else if (totalEnemyMoraleApplied > 0) {
-						Helpers.Say(_strings.EnemyMoraleEffect
+						Helpers.Say("{=enemymoraleeffect}" + _strings.EnemyMoraleEffect
 								.Replace("$AGENTMORALE$", (_moraleChange / 2).ToString())
 								.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
 						);
 					} else {
-						Helpers.Say(_strings.NoEffect);
+						Helpers.Say("{=noeffect}" + _strings.NoEffect);
 						_cheerAmount++;
 					}
 				} else {

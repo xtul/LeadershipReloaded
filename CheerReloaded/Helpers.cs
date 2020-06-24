@@ -1,29 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
-using TaleWorlds.TwoDimension;
 
 namespace CheerReloaded {
 	public static class Helpers {
 		public static void Say(string text) {
 			text = CleanupText(text);
-			InformationManager.DisplayMessage(new InformationMessage(text, new TaleWorlds.Library.Color(0.437f, 0.625f, 1f)));
+			InformationManager.DisplayMessage(new InformationMessage(new TextObject(text, null).ToString(), new Color(0.437f, 0.625f, 1f)));
 		}
 
 		public static void Log(string text) {
 			text = CleanupText(text);
-			InformationManager.DisplayMessage(new InformationMessage(text, new TaleWorlds.Library.Color(0.5f, 0.5f, 0.5f)));
+			InformationManager.DisplayMessage(new InformationMessage(new TextObject(text, null).ToString(), new Color(0.5f, 0.5f, 0.5f)));
 		}
 
-		public static void Announce(string text) {
-			InformationManager.AddQuickInformation(new TextObject(text));
+		public static void Announce(string text, BasicCharacterObject agent = null) {
+			InformationManager.AddQuickInformation(new TextObject(text, null), announcerCharacter: agent);
 		}
 
 		private static string CleanupText(string t) {

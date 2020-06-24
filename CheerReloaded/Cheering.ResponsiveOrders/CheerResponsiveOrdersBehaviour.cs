@@ -121,17 +121,20 @@ namespace CheerReloaded {
 		private async void Grunt(Agent a) {
 			if (_affirmativeAgentCounter > _affirmativeAgentMaxCount*2) return;
 
-			var agentPosition = a.Position;
-			var distanceToPlayer = Agent.Main.GetPathDistanceToPoint(ref agentPosition);
-			if (distanceToPlayer > 35f) return;
+			try {
+				var agentPosition = a.Position;
 
-			_affirmativeAgentCounter++;
+				var distanceToPlayer = agentPosition.Distance(Agent.Main.Position);
+				if (distanceToPlayer > 35f) return;
 
-			var timeToRespond = (int)(_rng.Next(700, 900) * (distanceToPlayer / 10)).Clamp(500, 1200);
+				_affirmativeAgentCounter++;
 
-			await Task.Delay(timeToRespond);
+				var timeToRespond = (int)(_rng.Next(700, 900) * (distanceToPlayer / 10)).Clamp(500, 1200);
 
-			a.MakeVoice(SkinVoiceManager.VoiceType.Everyone, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+				await Task.Delay(timeToRespond);
+
+				a.MakeVoice(SkinVoiceManager.VoiceType.Everyone, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
+			} catch { }
 		}
 
 		private void ReactToChangedFormations() {
