@@ -2,6 +2,7 @@
 using TaleWorlds.MountAndBlade;
 using static CheerReloaded.Helpers;
 using TaleWorlds.InputSystem;
+using SandBox.Source.Missions;
 
 namespace CheerReloaded {
 	public class CheerReloadedSubModule : MBSubModuleBase {
@@ -22,9 +23,7 @@ namespace CheerReloaded {
 			if (_config.DebugMode == true) {
 				Log("{=debug_loadingsuccessful}" + _strings.Debug.LoadingSuccessful);
 			}
-			if (!_config.DebugMode) {
-				if (!mission.IsFieldBattle) return;
-			}
+			if (mission.GetMissionBehaviour<ArenaDuelMissionBehaviour>() != null) return;
 
 			CorrectConfig();
 
@@ -33,7 +32,7 @@ namespace CheerReloaded {
 
 			mission.AddMissionBehaviour(new CheerBehaviour(_config, _common, _strings));
 			if (_config.AI.Enabled) {
-				mission.AddMissionBehaviour(new CheerAIBehaviour(_config, _common, _strings));
+				Mission.Current.AddMissionBehaviour(new CheerAIBehaviour(_config, _common, _strings));
 			}
 			if (_config.ResponsiveOrders.Enabled) {
 				mission.AddMissionBehaviour(new CheerResponsiveOrdersBehaviour(_config));

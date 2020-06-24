@@ -23,7 +23,7 @@ namespace CheerReloaded {
 			if (agent.Character == null) return;
 
 			if (agent.IsHero) {
-				agent.AddComponent(new CheerAIComponent(_config, agent, _common, _strings, Agent.Main.Team.Side));
+				agent.AddComponent(new CheerAIComponent(_config, agent, _common, _strings));
 				if (_config.AI.ImpactfulDeath) {
 					agent.OnAgentHealthChanged += OnHitPointsChanged;
 				}
