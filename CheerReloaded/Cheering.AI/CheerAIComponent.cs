@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 namespace CheerReloaded {
@@ -85,12 +86,16 @@ namespace CheerReloaded {
 			_canCheer = false;
 
 			if (_config.AI.DisplayAnnouncement) {
-				//Helpers.Announce($"{_agent.Name} cheers, boosting {(_agent.IsFemale ? "her" : "his")} allies' morale!");
 				Helpers.Announce("{=lord_cheered}" + _strings.Lord.Cheered
 								.Replace("$NAME$", _agent.Name)
 								.Replace("$HISHERUPPER$", _agent.IsFemale ? "Her" : "His")
 								.Replace("$HISHERLOWER$", _agent.IsFemale ? "her" : "his"),
-								_agent.Character
+								_agent.Character,
+								new Dictionary<string, TextObject> {
+									{ "NAME", new TextObject(_agent.Name) },
+									{ "HISHERUPPER", new TextObject(_agent.IsFemale ? "Her" : "His") },
+									{ "HISHERLOWER", new TextObject(_agent.IsFemale ? "her" : "his") }
+								}
 				);
 			}
 

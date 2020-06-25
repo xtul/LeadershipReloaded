@@ -1,4 +1,6 @@
-﻿namespace CheerReloaded {
+﻿using System.Security.Cryptography;
+
+namespace CheerReloaded {
 	public class Strings {
 		public string Failed { get; set; }
 		public string NoEffect { get; set; }

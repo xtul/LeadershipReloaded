@@ -1,7 +1,7 @@
 ﻿<Module>
     <Name value="Cheering Reloaded"/>
     <Id value="CheerReloaded"/>
-    <Version value="v1.2.5"/>
+    <Version value="v1.2.6"/>
     <SingleplayerModule value="true"/>
     <MultiplayerModule value="false"/>
     <DependedModules>

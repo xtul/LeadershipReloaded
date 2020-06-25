@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using TaleWorlds.CampaignSystem;
 using Helpers;
+using TaleWorlds.Localization;
 
 namespace CheerReloaded {
 	internal class CheerBehaviour : MissionBehaviour {
@@ -39,7 +40,11 @@ namespace CheerReloaded {
 				_cheerAmount = _config.BaselineCheerAmount;
 				var leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 				_cheerAmount += Math.DivRem(leadership, _config.CheersPerXLeadershipLevels, out _);
-				Helpers.Say("{=cheercounter}" + _strings.CheerCounter.Replace("$COUNT$", _cheerAmount.ToString()));
+				Helpers.Say("{=cheercounter}" + _strings.CheerCounter.Replace("$COUNT$", _cheerAmount.ToString()),
+							new Dictionary<string, TextObject> {
+								{ "COUNT", new TextObject(_cheerAmount.ToString()) }
+							}
+				);
 			}
 		}
 
@@ -182,28 +187,47 @@ namespace CheerReloaded {
 					if (totalFriendlyMoraleApplied > 0) {
 						Helpers.Say("{=friendly_positivemorale}" + _strings.Friendly.PositiveMorale
 								.Replace("$AGENTMORALE$", _moraleChange.ToString())
-								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString())
+								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString()),
+								new Dictionary<string, TextObject> {
+									{ "AGENTMORALE", new TextObject(_moraleChange) },
+									{ "TOTALMORALE", new TextObject(totalFriendlyMoraleApplied) }
+								}
 						);
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
 							Helpers.Say("{=enemy_negativemorale}" + _strings.Enemy.NegativeMorale
 									.Replace("$AGENTMORALE$", (_moraleChange / 2).ToString())
-									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
+									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString()),
+									new Dictionary<string, TextObject> {
+										{ "AGENTMORALE", new TextObject(_moraleChange / 2) },
+										{ "TOTALMORALE", new TextObject(totalEnemyMoraleApplied) }
+									}
 							);
 						}
 					} else if (totalFriendlyMoraleApplied < 0) {
 						Helpers.Say("{=friendly_negativemorale}" + _strings.Friendly.NegativeMorale
 								.Replace("$AGENTMORALE$", _moraleChange.ToString())
-								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString())
+								.Replace("$TOTALMORALE$", totalFriendlyMoraleApplied.ToString()),
+								new Dictionary<string, TextObject> {
+									{ "AGENTMORALE", new TextObject(_moraleChange) },
+									{ "TOTALMORALE", new TextObject(totalFriendlyMoraleApplied) }
+								}
 						);
 						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
 							Helpers.Say("{=friendly_positivemorale}" + _strings.Enemy.PositiveMorale
-									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
+									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString()),
+									new Dictionary<string, TextObject> {
+										{ "TOTALMORALE", new TextObject(totalEnemyMoraleApplied) }
+									}
 							);
 						}
 					} else if (totalEnemyMoraleApplied > 0) {
 						Helpers.Say("{=enemymoraleeffect}" + _strings.EnemyMoraleEffect
 								.Replace("$AGENTMORALE$", (_moraleChange / 2).ToString())
-								.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString())
+								.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString()),
+								new Dictionary<string, TextObject> {
+									{ "AGENTMORALE", new TextObject(_moraleChange / 2) },
+									{ "TOTALMORALE", new TextObject(totalEnemyMoraleApplied) }
+								}
 						);
 					} else {
 						Helpers.Say("{=noeffect}" + _strings.NoEffect);

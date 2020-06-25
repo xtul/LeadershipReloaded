@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
@@ -7,9 +8,14 @@ using TaleWorlds.Localization;
 
 namespace CheerReloaded {
 	public static class Helpers {
-		public static void Say(string text) {
+		public static void Say(string text, Dictionary<string, TextObject> attributes = null) {
 			text = CleanupText(text);
-			InformationManager.DisplayMessage(new InformationMessage(new TextObject(text, null).ToString(), new Color(0.437f, 0.625f, 1f)));
+			var sayContent = new TextObject(text);
+			if (attributes != null)
+			foreach (var kv in attributes) {
+				sayContent = sayContent.SetTextVariable(kv.Key, kv.Value);
+			}
+			InformationManager.DisplayMessage(new InformationMessage(sayContent.ToString(), new Color(0.437f, 0.625f, 1f)));
 		}
 
 		public static void Log(string text) {
@@ -17,8 +23,13 @@ namespace CheerReloaded {
 			InformationManager.DisplayMessage(new InformationMessage(new TextObject(text, null).ToString(), new Color(0.5f, 0.5f, 0.5f)));
 		}
 
-		public static void Announce(string text, BasicCharacterObject agent = null) {
-			InformationManager.AddQuickInformation(new TextObject(text, null), announcerCharacter: agent);
+		public static void Announce(string text, BasicCharacterObject agent = null, Dictionary<string, TextObject> attributes = null) {
+			var sayContent = new TextObject(text);
+			if (attributes != null)
+			foreach (var kv in attributes) {
+				sayContent = sayContent.SetTextVariable(kv.Key, kv.Value);
+			}
+			InformationManager.AddQuickInformation(sayContent, announcerCharacter: agent);
 		}
 
 		private static string CleanupText(string t) {

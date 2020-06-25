@@ -3,6 +3,9 @@ using TaleWorlds.MountAndBlade;
 using static CheerReloaded.Helpers;
 using TaleWorlds.InputSystem;
 using SandBox.Source.Missions;
+using TaleWorlds.Localization;
+using TaleWorlds.Core;
+using TaleWorlds.Library;
 
 namespace CheerReloaded {
 	public class CheerReloadedSubModule : MBSubModuleBase {

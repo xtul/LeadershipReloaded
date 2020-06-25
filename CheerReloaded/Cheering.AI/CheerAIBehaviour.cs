@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TaleWorlds.Core;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 namespace CheerReloaded {
@@ -46,10 +48,16 @@ namespace CheerReloaded {
 
 				Helpers.Announce("{=lord_died}" + _strings.Lord.Died
 								.Replace("$NAME$", agent.Name)
+								.Replace("$MORALEHIT$", _config.AI.DeathMoraleDecrease.ToString())
 								.Replace("$HISHERUPPER$", agent.IsFemale ? "Her" : "His")
-								.Replace("$HISHERLOWER$", agent.IsFemale ? "her" : "his")
-								.Replace("$MORALEHIT$", _config.AI.DeathMoraleDecrease.ToString()),
-								agent.Character
+								.Replace("$HISHERLOWER$", agent.IsFemale ? "her" : "his"),
+								agent.Character,
+								new Dictionary<string, TextObject> {
+									{ "NAME", new TextObject(agent.Name) },
+									{ "MORALEHIT", new TextObject(_config.AI.DeathMoraleDecrease)},
+									{ "HISHERUPPER", new TextObject(agent.IsFemale ? "Her" : "His") },
+									{ "HISHERLOWER", new TextObject(agent.IsFemale ? "her" : "his") }
+								}
 
 				);
 			}
