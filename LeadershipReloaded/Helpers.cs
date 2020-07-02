@@ -80,7 +80,7 @@ namespace LeadershipReloaded {
 		/// <returns></returns>
 		public static T ReadAndStoreAsType<T>(string xml) where T : class {
 			var serializer = new XmlSerializer(typeof(T));
-			var reader = new StreamReader(BasePath.Name + $"Modules/CheerReloaded/bin/Win64_Shipping_Client/{xml}.xml");
+			var reader = new StreamReader(BasePath.Name + $"Modules/LeadershipReloaded/bin/Win64_Shipping_Client/{xml}.xml");
 			var result = (T)serializer.Deserialize(reader);
 			reader.Close();
 			return result;
