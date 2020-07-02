@@ -33,32 +33,31 @@ namespace CheerReloaded.Common {
 		/// </summary>
 		/// <param name="a">An agent to apply cheering to.</param>
 		public void ApplyCheerEffects(Agent a, float moraleChange, bool doAnim = true, bool doVoice = true) {
-			if (Mission.Current == null)
-				return;
+			if (Mission.Current == null) return;
 
-			ActionIndexCache[] cheerActions = _cheerNoneActions;
-			var wieldedWeapons = a.WieldedWeapon.Weapons;
-			if (wieldedWeapons.Count > 0) {
-				foreach (var weapon in wieldedWeapons) {
-					if (weapon.IsRangedWeapon) {
-						cheerActions = _cheerBowActions;
-						break;
-					}
-					if (weapon.IsMeleeWeapon) {
-						if (weapon.RelevantSkill == DefaultSkills.TwoHanded) {
-							cheerActions = _cheer2hActions;
+			if (doAnim) {
+				ActionIndexCache[] cheerActions = _cheerNoneActions;
+				if (a.Mission == null) return;
+				var wieldedWeapons = a.WieldedWeapon.Weapons;
+				if (wieldedWeapons.Count > 0) {
+					foreach (var weapon in wieldedWeapons) {
+						if (weapon.IsRangedWeapon) {
+							cheerActions = _cheerBowActions;
 							break;
 						}
-						if (weapon.RelevantSkill == DefaultSkills.OneHanded || weapon.RelevantSkill == DefaultSkills.Throwing) {
-							cheerActions = _cheer1hActions;
-							break;
+						if (weapon.IsMeleeWeapon) {
+							if (weapon.RelevantSkill == DefaultSkills.TwoHanded) {
+								cheerActions = _cheer2hActions;
+								break;
+							}
+							if (weapon.RelevantSkill == DefaultSkills.OneHanded || weapon.RelevantSkill == DefaultSkills.Throwing) {
+								cheerActions = _cheer1hActions;
+								break;
+							}
 						}
 					}
 				}
-			}
 
-
-			if (doAnim) {
 				// additionalFlags: it seems like anything past 2 means "can be cancelled by other actions"
 				a.SetActionChannel(1, cheerActions[MBRandom.RandomInt(cheerActions.Length)], additionalFlags: 2);
 			}

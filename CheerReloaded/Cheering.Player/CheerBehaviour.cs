@@ -18,6 +18,7 @@ namespace CheerReloaded.Player {
 		private readonly Config _config;
 		private readonly Strings _strings;
 		private readonly CheerCommonMethods _common;
+		private readonly Random _rng;
 		private float _effectRadius;
 		private int _moraleChange;
 		private int _cheerAmount;
@@ -28,6 +29,7 @@ namespace CheerReloaded.Player {
 			_strings = strings;
 			_canCheer = true;
 			_common = common;
+			_rng = new Random();
 		}
 
 		public override void OnAgentBuild(Agent agent, Banner banner) {
@@ -154,7 +156,7 @@ namespace CheerReloaded.Player {
 
 				foreach (var a in friendlyAgentsList) {
 					_common.ApplyCheerEffects(a, _moraleChange);
-					await Task.Delay(MBRandom.RandomInt(0, 9));
+					await Task.Delay(_rng.Next(0, 9));
 					totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, noNegativeMorale: _config.PreventNegativeMorale);
 				}
 

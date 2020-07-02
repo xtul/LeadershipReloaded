@@ -8,6 +8,7 @@ using CheerReloaded.Player;
 using CheerReloaded.AI;
 using CheerReloaded.Responsive;
 using CheerReloaded.Settings;
+using TaleWorlds.CampaignSystem;
 
 namespace CheerReloaded {
 	public class CheerReloadedSubModule : MBSubModuleBase {
@@ -21,6 +22,8 @@ namespace CheerReloaded {
 		/// to the mission.
 		/// </summary>
 		public override void OnMissionBehaviourInitialize(Mission mission) {
+			if (Settlement.CurrentSettlement != null) return; //prevent cheering in arenas, tournaments etc.
+
 			_common = new CheerCommonMethods();
 			_config = ReadAndStoreAsType<Config>("config");
 			_strings = ReadAndStoreAsType<Strings>("strings");

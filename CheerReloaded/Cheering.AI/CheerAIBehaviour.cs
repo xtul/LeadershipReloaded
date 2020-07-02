@@ -75,11 +75,14 @@ namespace CheerReloaded.AI {
 
 		public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow) {
 			if (Campaign.Current == null) return;
-			if (_config.AI.PersonalEffects.Enabled) {
-				if (affectedAgent.IsHero && _personalDeathEffectAgentList.Contains(affectedAgent) && affectorAgent == Agent.Main) {
-					Hero killedHero = Hero.All.Where(x => x.StringId == affectedAgent.Character.StringId).FirstOrDefault();
-					Hero playerHero = Hero.All.Where(x => x.StringId == affectorAgent.Character.StringId).FirstOrDefault();
+			if (affectedAgent.Character == null) return;
+			if (!affectedAgent.IsHero) return;
 
+			if (_config.AI.PersonalEffects.Enabled) {
+				if (_personalDeathEffectAgentList.Contains(affectedAgent) && affectorAgent == Agent.Main) {
+					var killedHero = Hero.FindFirst(x => x.StringId == affectedAgent.Character.StringId);
+					var playerHero = Hero.FindFirst(x => x.StringId == affectorAgent.Character.StringId);
+					
 					ChangeRelationAction.ApplyPlayerRelation(killedHero, _config.AI.PersonalEffects.RelationshipChange, false, true);
 					playerHero.Clan.AddRenown(_config.AI.PersonalEffects.RenownGain);
 
