@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
+using System.Security.Policy;
 
-namespace CheerReloaded {
+namespace CheerReloaded.Settings {
 	public class Strings {
 		public string Failed { get; set; }
 		public string NoEffect { get; set; }
@@ -21,6 +22,7 @@ namespace CheerReloaded {
 	public class Lord {
 		public string Cheered { get; set; }
 		public string Died { get; set; }
+		public string DeathPersonalEffect { get; set; }
 	}
 
 	public class Debug {

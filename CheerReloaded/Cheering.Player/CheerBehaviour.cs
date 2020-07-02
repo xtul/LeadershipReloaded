@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Net.NetworkInformation;
 using TaleWorlds.CampaignSystem;
-using Helpers;
 using TaleWorlds.Localization;
+using CheerReloaded.Common;
+using CheerReloaded.Settings;
 
-namespace CheerReloaded {
+namespace CheerReloaded.Player {
 	internal class CheerBehaviour : MissionBehaviour {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 

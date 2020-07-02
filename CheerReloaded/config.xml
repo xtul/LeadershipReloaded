@@ -37,6 +37,14 @@
 		<ImpactfulDeath>true</ImpactfulDeath>
 		<!-- if above is true, how much morale should nearby soldiers lose? range: 1 - 100 -->
 		<DeathMoraleDecrease>3</DeathMoraleDecrease>
+		<PersonalEffects>
+			<!-- if enabled, if you kill enemy leader personally you will gain some renown and negative relationship-->
+			<Enabled>true</Enabled>
+			<!-- how much renown do you gain by killing enemy leader? -->
+			<RenownGain>5</RenownGain>
+			<!-- how much relationship changes? -->
+			<RelationshipChange>-1</RelationshipChange>
+		</PersonalEffects>
 	</AI>
 
 	<!-- Responsive Orders section -->
@@ -44,6 +52,8 @@
 		<!-- if set to true, units you make orders to will audibly react -->
 		<Enabled>true</Enabled>
 		<!-- the minimum amount of troops that will reply to your orders (afterwards it's + Leadership / 25) -->
-		<BaselineResponseCount>8</BaselineResponseCount>
+		<BaselineResponseCount>16</BaselineResponseCount>
+		<!-- if set to true, your soldiers will yell when charging for a bit longer -->
+		<ContinuousChargeYell>true</ContinuousChargeYell>
 	</ResponsiveOrders>
 </Config>

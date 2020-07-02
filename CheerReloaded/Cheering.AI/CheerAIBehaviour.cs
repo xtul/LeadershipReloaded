@@ -1,21 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using CheerReloaded.Settings;
+using CheerReloaded.Common;
+using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.CampaignSystem;
+using System;
+using TaleWorlds.CampaignSystem.Actions;
 
-namespace CheerReloaded {
+namespace CheerReloaded.AI {
 	internal class CheerAIBehaviour : MissionBehaviour {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
 		private readonly Strings _strings;
 		private readonly CheerCommonMethods _common;
+		private readonly List<Agent> _personalDeathEffectAgentList;
 
 		public CheerAIBehaviour(Config config, CheerCommonMethods common, Strings strings) {
 			_config = config;
 			_strings = strings;
 			_common = common;
+			_personalDeathEffectAgentList = new List<Agent>();
 		}
 
 		public override void OnAgentCreated(Agent agent) {
@@ -28,6 +35,9 @@ namespace CheerReloaded {
 				agent.AddComponent(new CheerAIComponent(_config, agent, _common, _strings));
 				if (_config.AI.ImpactfulDeath) {
 					agent.OnAgentHealthChanged += OnHitPointsChanged;
+				}
+				if (_config.AI.PersonalEffects.Enabled) {
+					_personalDeathEffectAgentList.Add(agent);
 				}
 			}
  		}
@@ -43,7 +53,7 @@ namespace CheerReloaded {
 													.Where(x => x.IsFriendOf(agent));
 				
 				foreach (var a in agentsToAffect) {
-					a.SetMorale(a.GetMorale() - 5f);
+					a.SetMorale(a.GetMorale() - _config.AI.DeathMoraleDecrease);
 				}
 
 				Helpers.Announce("{=lord_died}" + _strings.Lord.Died
@@ -60,6 +70,29 @@ namespace CheerReloaded {
 								}
 
 				);
+			}
+		}
+
+		public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow) {
+			if (Campaign.Current == null) return;
+			if (_config.AI.PersonalEffects.Enabled) {
+				if (affectedAgent.IsHero && _personalDeathEffectAgentList.Contains(affectedAgent) && affectorAgent == Agent.Main) {
+					Hero killedHero = Hero.All.Where(x => x.StringId == affectedAgent.Character.StringId).FirstOrDefault();
+					Hero playerHero = Hero.All.Where(x => x.StringId == affectorAgent.Character.StringId).FirstOrDefault();
+
+					ChangeRelationAction.ApplyPlayerRelation(killedHero, _config.AI.PersonalEffects.RelationshipChange, false, true);
+					playerHero.Clan.AddRenown(_config.AI.PersonalEffects.RenownGain);
+
+					Helpers.Say("{=death_personal_effect}" + _strings.Lord.DeathPersonalEffect
+								.Replace("$NAME$", affectedAgent.Name)
+								.Replace("$RENOWN$", _config.AI.PersonalEffects.RenownGain.ToString())
+								.Replace("$RELATIONSHIPHIT$", _config.AI.PersonalEffects.RelationshipChange.ToString()),
+								new Dictionary<string, TextObject> {
+									{ "NAME", new TextObject(affectedAgent.Name) },
+									{ "RENOWN", new TextObject(_config.AI.PersonalEffects.RenownGain.ToString()) },
+									{ "RELATIONSHIPHIT", new TextObject(_config.AI.PersonalEffects.RelationshipChange.ToString()) }
+								});
+				}
 			}
 		}
 	}

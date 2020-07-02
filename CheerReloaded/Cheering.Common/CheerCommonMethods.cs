@@ -6,19 +6,26 @@ using System.Threading.Tasks;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
-namespace CheerReloaded {
+namespace CheerReloaded.Common {
 	public class CheerCommonMethods {
-		public readonly ActionIndexCache[] _cheerActions = new ActionIndexCache[] {
+		public readonly ActionIndexCache[] _cheerBowActions = new ActionIndexCache[] {
 			ActionIndexCache.Create("act_command_bow"),
-			ActionIndexCache.Create("act_command_follow_bow"),
+			ActionIndexCache.Create("act_command_follow_bow")
+		};
+		public readonly ActionIndexCache[] _cheer2hActions = new ActionIndexCache[] {
 			ActionIndexCache.Create("act_command_2h"),
 			ActionIndexCache.Create("act_command_2h_leftstance"),
+			ActionIndexCache.Create("act_command_follow_2h"),
+			ActionIndexCache.Create("act_command_follow_2h_leftstance")
+		};
+		public readonly ActionIndexCache[] _cheer1hActions = new ActionIndexCache[] {
 			ActionIndexCache.Create("act_command"),
 			ActionIndexCache.Create("act_command_follow"),
 			ActionIndexCache.Create("act_command_leftstance"),
-			ActionIndexCache.Create("act_command_follow_2h"),
-			ActionIndexCache.Create("act_command_follow_2h_leftstance"),
 			ActionIndexCache.Create("act_command_follow_leftstance")
+		};
+		public readonly ActionIndexCache[] _cheerNoneActions = new ActionIndexCache[] {
+			ActionIndexCache.Create("act_command")
 		};
 
 		/// <summary>
@@ -29,13 +36,34 @@ namespace CheerReloaded {
 			if (Mission.Current == null)
 				return;
 
-			if (doAnim) {
-				// additionalFlags: it seems like anything past 2 means "can be cancelled by other actions"
-				a.SetActionChannel(1, _cheerActions[MBRandom.RandomInt(_cheerActions.Length)], additionalFlags: 2);
+			ActionIndexCache[] cheerActions = _cheerNoneActions;
+			var wieldedWeapons = a.WieldedWeapon.Weapons;
+			if (wieldedWeapons.Count > 0) {
+				foreach (var weapon in wieldedWeapons) {
+					if (weapon.IsRangedWeapon) {
+						cheerActions = _cheerBowActions;
+						break;
+					}
+					if (weapon.IsMeleeWeapon) {
+						if (weapon.RelevantSkill == DefaultSkills.TwoHanded) {
+							cheerActions = _cheer2hActions;
+							break;
+						}
+						if (weapon.RelevantSkill == DefaultSkills.OneHanded || weapon.RelevantSkill == DefaultSkills.Throwing) {
+							cheerActions = _cheer1hActions;
+							break;
+						}
+					}
+				}
 			}
 
-			if (!doVoice)
-				return;
+
+			if (doAnim) {
+				// additionalFlags: it seems like anything past 2 means "can be cancelled by other actions"
+				a.SetActionChannel(1, cheerActions[MBRandom.RandomInt(cheerActions.Length)], additionalFlags: 2);
+			}
+
+			if (!doVoice) return;
 
 			// i know ugly as hell
 			if (moraleChange >= 0) {

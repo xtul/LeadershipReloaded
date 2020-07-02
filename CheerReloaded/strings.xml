@@ -40,6 +40,9 @@
 		<Died>
 			$NAME$ has fallen. $HISHERUPPER$ units receive -$MORALEHIT$ morale.
 		</Died>
+		<DeathPersonalEffect>
+			You gained $RENOWN$ renown and your relationship with $NAME$ has changed by $RELATIONSHIPHIT$.
+		</DeathPersonalEffect>
 	</Lord>
 
 	<InvalidKeyCode>

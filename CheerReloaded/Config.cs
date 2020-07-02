@@ -1,4 +1,4 @@
-﻿namespace CheerReloaded {
+﻿namespace CheerReloaded.Settings {
 	public class Config {
 		public int KeyCode { get; set; }
 		public int BaselineCheerAmount { get; set; }
@@ -22,10 +22,18 @@
 		public bool DisplayAnnouncement { get; set; }
 		public bool ImpactfulDeath { get; set; }
 		public int DeathMoraleDecrease { get; set; }
+		public PersonalEffects PersonalEffects {get;set;}
+	}
+
+	public class PersonalEffects {
+		public bool Enabled { get; set; }
+		public int RenownGain { get; set; }
+		public int RelationshipChange { get; set; }
 	}
 
 	public class ResponsiveOrders {
 		public bool Enabled { get; set; }
 		public int BaselineResponseCount { get; set; }
+		public bool ContinuousChargeYell { get; set; }
 	}
 }

@@ -3,9 +3,11 @@ using TaleWorlds.MountAndBlade;
 using static CheerReloaded.Helpers;
 using TaleWorlds.InputSystem;
 using SandBox.Source.Missions;
-using TaleWorlds.Localization;
-using TaleWorlds.Core;
-using TaleWorlds.Library;
+using CheerReloaded.Common;
+using CheerReloaded.Player;
+using CheerReloaded.AI;
+using CheerReloaded.Responsive;
+using CheerReloaded.Settings;
 
 namespace CheerReloaded {
 	public class CheerReloadedSubModule : MBSubModuleBase {
@@ -51,12 +53,12 @@ namespace CheerReloaded {
 			_config.AI.DeathMoraleDecrease.Clamp(0, 100);
 			_config.AI.MaximumAdvantageMorale.Clamp(0, 100);
 			_config.AI.MaximumMoralePerAgent.Clamp(0, 100);
+			_config.AI.PersonalEffects.RelationshipChange.Clamp(-100, 100);
 
 			if (!Enum.IsDefined(typeof(InputKey), _config.KeyCode)) {
 				Say("{=invalidkeycode}" + _strings.InvalidKeyCode);
 				_config.KeyCode = 47;
 			}
-
 		}
 	}
 }

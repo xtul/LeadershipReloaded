@@ -18,6 +18,7 @@
 
 	<string id="lord_cheered" text="{NAME} cheers, boosting {HISHERLOWER} allies' morale!" />
 	<string id="lord_died" text="{NAME} has fallen. {HISHERUPPER} units receive -{MORALEHIT} morale." />
+	<string id="death_personal_effect" text="You gained {RENOWN} renown and your relationship with {NAME} has changed by {RELATIONSHIPHIT}."/>
 
 	<string id="debug_loadingsuccessful" text="Cheering Reloaded activated." />
   </strings>
