@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
-namespace CheerReloaded.Common {
+namespace LeadershipReloaded.Common {
 	public class CheerCommonMethods {
 		public readonly ActionIndexCache[] _cheerBowActions = new ActionIndexCache[] {
 			ActionIndexCache.Create("act_command_bow"),

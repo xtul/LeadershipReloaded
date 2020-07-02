@@ -1,4 +1,4 @@
-﻿namespace CheerReloaded.Settings {
+﻿namespace LeadershipReloaded.Settings {
 	public class Config {
 		public int KeyCode { get; set; }
 		public int BaselineCheerAmount { get; set; }

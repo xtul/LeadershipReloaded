@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Localization;
-using CheerReloaded.Common;
-using CheerReloaded.Settings;
+using LeadershipReloaded.Common;
+using LeadershipReloaded.Settings;
 
-namespace CheerReloaded.Player {
-	internal class CheerBehaviour : MissionBehaviour {
+namespace LeadershipReloaded.Player {
+	internal class LeadershipBehaviour : MissionBehaviour {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
@@ -24,7 +24,7 @@ namespace CheerReloaded.Player {
 		private int _cheerAmount;
 		private bool _canCheer;
 
-		public CheerBehaviour(Config config, CheerCommonMethods common, Strings strings) {
+		public LeadershipBehaviour(Config config, CheerCommonMethods common, Strings strings) {
 			_config = config;
 			_strings = strings;
 			_canCheer = true;

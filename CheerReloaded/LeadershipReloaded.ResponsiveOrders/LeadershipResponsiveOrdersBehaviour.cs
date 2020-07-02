@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
-using CheerReloaded.Settings;
+using LeadershipReloaded.Settings;
 
-namespace CheerReloaded.Responsive {
-	internal class CheerResponsiveOrdersBehaviour : MissionBehaviour {
+namespace LeadershipReloaded.Responsive {
+	internal class LeadershipResponsiveOrdersBehaviour : MissionBehaviour {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
@@ -18,7 +18,7 @@ namespace CheerReloaded.Responsive {
 
 		private OrderType _orderType;
 
-		public CheerResponsiveOrdersBehaviour(Config config) {
+		public LeadershipResponsiveOrdersBehaviour(Config config) {
 			_config = config;
 			_rng = new Random();
 		}

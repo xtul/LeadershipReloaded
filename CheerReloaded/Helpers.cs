@@ -6,7 +6,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
-namespace CheerReloaded {
+namespace LeadershipReloaded {
 	public static class Helpers {
 		public static void Say(string text, Dictionary<string, TextObject> attributes = null) {
 			text = CleanupText(text);

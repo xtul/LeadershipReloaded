@@ -9,8 +9,8 @@
     <ProjectGuid>{840F62EC-BBFF-43E0-B9C8-4EAA3938E598}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CheerReloaded</RootNamespace>
-    <AssemblyName>CheerReloaded</AssemblyName>
+    <RootNamespace>LeadershipReloaded</RootNamespace>
+    <AssemblyName>LeadershipReloaded</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Steam\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\CheerReloaded\bin\Win64_Shipping_Client</OutputPath>
+    <OutputPath>..\..\..\..\..\..\..\Steam\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\LeadershipReloaded\bin\Win64_Shipping_Client\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -257,12 +257,12 @@
     <!-- TODO: Don't think this can be made optional -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cheering.AI\CheerAIBehaviour.cs" />
-    <Compile Include="Cheering.AI\CheerAIComponent.cs" />
-    <Compile Include="Cheering.Common\CheerCommonMethods.cs" />
-    <Compile Include="Cheering.Player\CheerBehaviour.cs" />
-    <Compile Include="CheerReloadedSubModule.cs" />
-    <Compile Include="Cheering.ResponsiveOrders\CheerResponsiveOrdersBehaviour.cs" />
+    <Compile Include="LeadershipReloaded.AI\LeadershipAIBehaviour.cs" />
+    <Compile Include="LeadershipReloaded.AI\LeadershipAIComponent.cs" />
+    <Compile Include="LeadershipReloaded.Common\LeadershipCommonMethods.cs" />
+    <Compile Include="LeadershipReloaded.Player\LeadershipBehaviour.cs" />
+    <Compile Include="LeadershipReloadedSubModule.cs" />
+    <Compile Include="LeadershipReloaded.ResponsiveOrders\LeadershipResponsiveOrdersBehaviour.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -281,7 +281,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /d /y "$(MSBuildProjectDirectory)\SubModule.xml" "C:\Steam\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\CheerReloaded"</PostBuildEvent>
+    <PostBuildEvent>xcopy /d /y "$(MSBuildProjectDirectory)\SubModule.xml" "C:\Steam\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\LeadershipReloaded"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

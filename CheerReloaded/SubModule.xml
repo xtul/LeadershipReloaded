@@ -1,6 +1,6 @@
 ﻿<Module>
-    <Name value="Cheering Reloaded"/>
-    <Id value="CheerReloaded"/>
+    <Name value="Leadership Reloaded"/>
+    <Id value="LeadershipReloaded"/>
     <Version value="v1.2.7"/>
     <SingleplayerModule value="true"/>
     <MultiplayerModule value="false"/>
@@ -13,9 +13,9 @@
     </DependedModules>
     <SubModules>
         <SubModule>
-            <Name value="CheerReloaded"/>
-            <DLLName value="CheerReloaded.dll"/>
-            <SubModuleClassType value="CheerReloaded.CheerReloadedSubModule"/>
+            <Name value="LeadershipReloaded"/>
+            <DLLName value="LeadershipReloaded.dll"/>
+            <SubModuleClassType value="LeadershipReloaded.LeadershipReloadedSubModule"/>
             <Tags>
                 <Tag key="DedicatedServerType" value="none" />
                 <Tag key="IsNoRenderModeElement" value="false" />

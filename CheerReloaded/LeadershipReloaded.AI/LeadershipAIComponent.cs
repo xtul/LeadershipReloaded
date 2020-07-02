@@ -7,10 +7,10 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using CheerReloaded.Common;
-using CheerReloaded.Settings;
+using LeadershipReloaded.Common;
+using LeadershipReloaded.Settings;
 
-namespace CheerReloaded.AI {
+namespace LeadershipReloaded.AI {
 	internal class CheerAIComponent : AgentComponent {
 		public int CheerRange;
 		public int _cheerAmount;

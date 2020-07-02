@@ -1,5 +1,5 @@
-﻿using CheerReloaded.Settings;
-using CheerReloaded.Common;
+﻿using LeadershipReloaded.Settings;
+using LeadershipReloaded.Common;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.Core;
@@ -9,8 +9,8 @@ using TaleWorlds.CampaignSystem;
 using System;
 using TaleWorlds.CampaignSystem.Actions;
 
-namespace CheerReloaded.AI {
-	internal class CheerAIBehaviour : MissionBehaviour {
+namespace LeadershipReloaded.AI {
+	internal class LeadershipAIBehaviour : MissionBehaviour {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
@@ -18,7 +18,7 @@ namespace CheerReloaded.AI {
 		private readonly CheerCommonMethods _common;
 		private readonly List<Agent> _personalDeathEffectAgentList;
 
-		public CheerAIBehaviour(Config config, CheerCommonMethods common, Strings strings) {
+		public LeadershipAIBehaviour(Config config, CheerCommonMethods common, Strings strings) {
 			_config = config;
 			_strings = strings;
 			_common = common;

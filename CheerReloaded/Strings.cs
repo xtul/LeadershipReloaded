@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Security.Policy;
 
-namespace CheerReloaded.Settings {
+namespace LeadershipReloaded.Settings {
 	public class Strings {
 		public string Failed { get; set; }
 		public string NoEffect { get; set; }
