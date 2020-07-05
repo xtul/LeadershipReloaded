@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -8,6 +9,7 @@ using TaleWorlds.Localization;
 
 namespace LeadershipReloaded {
 	public static class Helpers {
+
 		public static void Say(string text, Dictionary<string, TextObject> attributes = null) {
 			text = CleanupText(text);
 			var sayContent = new TextObject(text);
@@ -84,6 +86,16 @@ namespace LeadershipReloaded {
 			var result = (T)serializer.Deserialize(reader);
 			reader.Close();
 			return result;
+		}
+
+		/// <summary>
+		/// Fire-and-forget task launcher.
+		/// </summary>
+		/// <param name="task">Task to run.</param>
+		public static void RunAsync(Task task) {
+			task.ContinueWith(t => {
+				Log(t.Exception.Message);
+			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 	}
 }

@@ -4,15 +4,18 @@ using System.Threading.Tasks;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 using LeadershipReloaded.Settings;
+using LeadershipReloaded.Common;
+using System.Linq;
 
-namespace LeadershipReloaded.Responsive {
+namespace LeadershipReloaded.ResponsiveOrders {
 	internal class LeadershipResponsiveOrdersBehaviour : MissionBehaviour {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
+		private readonly Random _rng;
+		private readonly SoundManager _soundManager;
 		private OrderController _orderController;
 		private int _playerLeadership;
-		private readonly Random _rng;
 		private int _affirmativeAgentCounter;
 		private int _affirmativeAgentMaxCount;
 
@@ -21,6 +24,7 @@ namespace LeadershipReloaded.Responsive {
 		public LeadershipResponsiveOrdersBehaviour(Config config) {
 			_config = config;
 			_rng = new Random();
+			_soundManager = new SoundManager(config);
 		}
 
 		public override async void OnAgentBuild(Agent agent, Banner banner) {
@@ -148,11 +152,12 @@ namespace LeadershipReloaded.Responsive {
 				var reactionList = new Action[] {
 					() => a.MakeVoice(SkinVoiceManager.VoiceType.Grunt, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction),
 					() => a.MakeVoice(SkinVoiceManager.VoiceType.Everyone, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction),
-					() => a.MakeVoice(SkinVoiceManager.VoiceType.Yell, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction)
+					() => a.MakeVoice(SkinVoiceManager.VoiceType.Yell, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction),
+					() => a.MakeVoice(SkinVoiceManager.VoiceType.HorseRally, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction)
 				};
 
 				if (Mission.Current != null && !Mission.Current.MissionEnded()) {
-					reactionList[MBRandom.RandomInt(0, 2)].Invoke();
+					reactionList[_rng.Next(0, 3)].Invoke();
 				}
 			} catch { }
 		}
@@ -179,11 +184,17 @@ namespace LeadershipReloaded.Responsive {
 
 		private async void ReactToIssuedOrder(OrderType orderType, IEnumerable<Formation> appliedFormations, params object[] delegateParams) {
 			if (Mission.Current == null) return;
+
+			_orderType = orderType;
 			try {
-				_orderType = orderType;
-				if (_config.ResponsiveOrders.ContinuousChargeYell == true && (orderType == OrderType.Charge || orderType == OrderType.ChargeWithTarget)) {
+				var randomAgent = appliedFormations.GetRandomElement().Team.ActiveAgents.GetRandomElement();
+				PlayHornBasedOnCulture(randomAgent, Agent.Main, orderType);
+				if (_config.ResponsiveOrders.ContinuousChargeYell && (orderType == OrderType.Charge || orderType == OrderType.ChargeWithTarget)) {
 					for (int i = 0; i < _rng.Next(8, 15); i++) {
-						foreach (var formation in appliedFormations) {
+						for (int f = 0; f <= appliedFormations.Count(); f++) {
+							var formation = appliedFormations.ElementAt(f);
+							if (formation == null) return;
+
 							var timeGate = MBCommon.GetTime(MBCommon.TimeType.Mission) + (_rng.Next(3, 9) / 10f);
 							while (Mission.Current != null) {
 								if (timeGate > MBCommon.GetTime(MBCommon.TimeType.Mission)) {
@@ -199,11 +210,30 @@ namespace LeadershipReloaded.Responsive {
 					return;
 				}
 				// default reaction
-				foreach (var formation in appliedFormations) {
+				for (int f = 0; f <= appliedFormations.Count(); f++) {
+					var formation = appliedFormations.ElementAt(f);
+					if (formation == null) return;
+
 					formation.ApplyActionOnEachUnit(Affirmative);
 					_affirmativeAgentCounter = 0;
 				}
 			} catch { }
+		}
+
+		private void PlayHornBasedOnCulture(Agent agentPlayingHorn, Agent agentCommander, OrderType orderType) {
+			if (!_config.ResponsiveOrders.Horn.Enabled) return;
+			if (agentCommander.Team.TeamAgents.Count < _config.ResponsiveOrders.Horn.MinTroopsToEnable) return;
+			if (agentPlayingHorn.GetTrackDistanceToMainAgent() < _config.ResponsiveOrders.Horn.MinDistanceToEnable) return;
+
+			var agentCulture = agentCommander.Character?.Culture.GetCultureCode().ToString() ?? "default";
+
+			Helpers.RunAsync(
+						_soundManager.PlayHorn(
+								agentCulture,
+								agentPlayingHorn,
+								orderType
+						)
+			);
 		}
 	}
 }

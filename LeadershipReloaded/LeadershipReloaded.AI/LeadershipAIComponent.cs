@@ -11,7 +11,7 @@ using LeadershipReloaded.Common;
 using LeadershipReloaded.Settings;
 
 namespace LeadershipReloaded.AI {
-	internal class CheerAIComponent : AgentComponent {
+	internal class LeadershipAIComponent : AgentComponent {
 		public int CheerRange;
 		public int _cheerAmount;
 
@@ -30,7 +30,7 @@ namespace LeadershipReloaded.AI {
 		/// <summary>
 		/// Allows AI to cheer under almost the same rules as the player.
 		/// </summary>
-		public CheerAIComponent(Config config, Agent agent, CheerCommonMethods common, Strings strings) : base(agent) {
+		public LeadershipAIComponent(Config config, Agent agent, CheerCommonMethods common, Strings strings) : base(agent) {
 			_config = config;
 			_strings = strings;
 			_agent = agent;

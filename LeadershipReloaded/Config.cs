@@ -35,5 +35,15 @@
 		public bool Enabled { get; set; }
 		public int BaselineResponseCount { get; set; }
 		public bool ContinuousChargeYell { get; set; }
+		public Horn Horn { get; set; }
+	}
+
+	public class Horn {
+		public bool Enabled { get; set; }
+		public float MaxVolume { get; set; }
+		public int MinTroopsToEnable { get; set; }
+		public int MinDistanceToEnable { get; set; }
+		public bool AddHornWhenVictoryCheering { get; set; }
+		public bool AlwaysUseDefault { get; set; }
 	}
 }

@@ -1,7 +1,7 @@
 ﻿<Module>
     <Name value="Leadership Reloaded"/>
     <Id value="LeadershipReloaded"/>
-    <Version value="v1.2.7"/>
+    <Version value="v1.3.0"/>
     <SingleplayerModule value="true"/>
     <MultiplayerModule value="false"/>
     <DependedModules>

@@ -6,7 +6,6 @@ using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.CampaignSystem;
-using System;
 using TaleWorlds.CampaignSystem.Actions;
 
 namespace LeadershipReloaded.AI {
@@ -32,7 +31,7 @@ namespace LeadershipReloaded.AI {
 			if (agent.Character == null) return;
 
 			if (agent.IsHero) {
-				agent.AddComponent(new CheerAIComponent(_config, agent, _common, _strings));
+				agent.AddComponent(new LeadershipAIComponent(_config, agent, _common, _strings));
 				if (_config.AI.ImpactfulDeath) {
 					agent.OnAgentHealthChanged += OnHitPointsChanged;
 				}
@@ -40,7 +39,7 @@ namespace LeadershipReloaded.AI {
 					_personalDeathEffectAgentList.Add(agent);
 				}
 			}
- 		}
+		}
 
 		private void OnHitPointsChanged(Agent agent, float oldHealth, float newHealth) {
 			if (newHealth < 1f) {

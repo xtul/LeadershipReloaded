@@ -18,6 +18,7 @@ namespace LeadershipReloaded.Player {
 		private readonly Config _config;
 		private readonly Strings _strings;
 		private readonly CheerCommonMethods _common;
+		private readonly SoundManager _soundManager;
 		private readonly Random _rng;
 		private float _effectRadius;
 		private int _moraleChange;
@@ -30,6 +31,7 @@ namespace LeadershipReloaded.Player {
 			_canCheer = true;
 			_common = common;
 			_rng = new Random();
+			_soundManager = new SoundManager(config);
 		}
 
 		public override void OnAgentBuild(Agent agent, Banner banner) {
@@ -63,6 +65,14 @@ namespace LeadershipReloaded.Player {
 						await DoInCombatCheer();
 						await Task.Delay(TimeSpan.FromSeconds(3));
 					} else {
+						Helpers.RunAsync(
+							_soundManager.PlayHorn(
+								"default",
+								Agent.Main.Team.TeamAgents.GetRandomElement(),
+								OrderType.GuardMe,
+								true
+							)
+						);
 						await DoVictoryCheer();
 						await Task.Delay(TimeSpan.FromSeconds(1));
 					}

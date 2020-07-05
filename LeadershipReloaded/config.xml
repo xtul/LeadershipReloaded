@@ -55,5 +55,20 @@
 		<BaselineResponseCount>16</BaselineResponseCount>
 		<!-- if set to true, your soldiers will yell when charging for a bit longer -->
 		<ContinuousChargeYell>true</ContinuousChargeYell>
+		<Horn>
+			<!-- if set to true, horns are blown when orders are issued (has an internal cooldown) -->
+			<Enabled>true</Enabled>
+			<!-- you need a minimum of x soldiers in party to enable horns (applies to you and AI) -->
+			<MinTroopsToEnable>40</MinTroopsToEnable>
+			<!-- A minimum distance to play horns. 0 by default. -->
+			<MinDistanceToEnable>0</MinDistanceToEnable>
+			<!-- here you can lower the maximum volume of the horns. 1 = 100%, 0.5 = 50% -->
+			<MaxVolume>0.9</MaxVolume>
+			<!-- when you cheer after being victorious, tries to play a custom horn (note that is has to exist) -->
+			<!-- you'll have to use your own sound file unless you like easter eggs -->
+			<AddHornWhenVictoryCheering>true</AddHornWhenVictoryCheering>
+			<!-- if enabled, it won't check your character's culture, will always use default instead -->
+			<AlwaysUseDefault>false</AlwaysUseDefault>
+		</Horn>
 	</ResponsiveOrders>
 </Config>
