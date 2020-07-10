@@ -25,6 +25,7 @@ namespace LeadershipReloaded.AI {
 		private float _timerToEnableCheering;
 		private bool _canCheer;
 		private IEnumerable<Agent> _agentsInArea;
+		private readonly BattleSideEnum _playerSide;
 
 
 		/// <summary>
@@ -37,11 +38,12 @@ namespace LeadershipReloaded.AI {
 			_common = common;
 			_leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
 			_cheerAmount = _config.AI.BaselineCheerAmount;
-			_cheerAmount += Math.DivRem(_leadership, _config.CheersPerXLeadershipLevels, out _);
+			_cheerAmount += Math.DivRem(_leadership, _config.Cheering.CheersPerXLeadershipLevels, out _);
 			_initialMorale = _agent?.GetMorale() ?? 0;
 			CheerRange = (_leadership / 2).Clamp(50, 200);
 			_canCheer = false;
 			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + MBRandom.RandomInt(8, 13);
+			_playerSide = agent.Team.Side;
 		}
 
 		protected override void OnTickAsAI(float dt) {
@@ -101,42 +103,44 @@ namespace LeadershipReloaded.AI {
 				);
 			}
 
-			var playerPower = 0f;
-			var enemyPower = 0f;
-			var mCap = _config.AI.MaximumMoralePerAgent;
-			var aCap = _config.AI.MaximumAdvantageMorale;
-			try {
-				foreach (var team in Mission.Current.Teams) {
-					foreach (var f in team.Formations) {
-						if (Agent.Main != null && f.Team.Side == Agent.Main.Team.Side) {
-							playerPower += f.GetFormationPower();
-						} else {
-							enemyPower += f.GetFormationPower();
-						}
+			float playerPower = 0;
+			float enemyPower = 0;
+			int mCap = _config.AI.MaximumMoralePerAgent;
+			int aCap = _config.AI.MaximumAdvantageMorale;
+			var teams = Mission.Current.Teams;
+
+			foreach (Team t in teams) {
+				// formation list may change, have to store it first
+				var formations = t.Formations; 
+				foreach (Formation f in formations) {
+					if (f.Team.Side == _playerSide) {
+						playerPower += f?.GetFormationPower() ?? 0f;
+					} else {
+						enemyPower += f?.GetFormationPower() ?? 0f;
 					}
 				}
-			} catch { }
+			}
 
-			float advantageBonus = ((playerPower - enemyPower) / 20).Clamp(aCap * -1, aCap);
+			float advantageBonus = ((playerPower - enemyPower) / 40).Clamp(aCap * -1, aCap);
 
 			_moraleChange = (int)Math.Round(((_leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap));
 
-			if (_config.PreventNegativeMorale) {
+			if (_config.Cheering.PreventNegativeMorale) {
 				_moraleChange.Clamp(0, 100);
 			}
 
-			var friendlyAgentsList = _agentsInArea.Where(x => x.Team.IsFriendOf(_agent.Team)).ToList();
-			var enemyAgentsList = _agentsInArea.Where(x => x.Team.IsEnemyOf(_agent.Team)).ToList();
+			var friendlyAgentsList = _agentsInArea.Where(x => x.Team.IsFriendOf(_agent.Team));
+			var enemyAgentsList = _agentsInArea.Where(x => x.Team.IsEnemyOf(_agent.Team));
 
 			var totalFriendlyMoraleApplied = 0;
 			var totalEnemyMoraleApplied = 0;
 
 			foreach (var a in friendlyAgentsList) {
 				_common.ApplyCheerEffects(a, _moraleChange);
-				totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, noNegativeMorale: _config.PreventNegativeMorale);
+				totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, noNegativeMorale: _config.Cheering.PreventNegativeMorale);
 			}
 
-			if (_leadership >= _config.EnemyMoraleLeadershipThreshold) {
+			if (_leadership >= _config.Cheering.EnemyMoraleLeadershipThreshold) {
 				foreach (var a in enemyAgentsList) {
 					totalEnemyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, true);
 					_common.ApplyCheerEffects(a, _moraleChange, false);

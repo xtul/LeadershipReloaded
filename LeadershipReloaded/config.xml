@@ -1,23 +1,25 @@
 ﻿<Config>
-	<!-- display debug information. Also if exception occurs, it gets copied to clipboard -->
-	<DebugMode>false</DebugMode>
-	<!-- defines how many times you can cheer regardless of your skills -->
-	<BaselineCheerAmount>2</BaselineCheerAmount>
-	<!-- you receive an additional cheer every X Leadership levels. Values lower than 1 will be set to 1. -->
-	<CheersPerXLeadershipLevels>50</CheersPerXLeadershipLevels>
-	<!-- should morale change be displayed in message box? -->
-	<ReportMoraleChange>true</ReportMoraleChange>
-	<!-- should we prevent negative morale change (for friendly units)? -->
-	<PreventNegativeMorale>true</PreventNegativeMorale>
-	<!-- how high your leadership has to be for it to affect enemies? -->
-	<EnemyMoraleLeadershipThreshold>75</EnemyMoraleLeadershipThreshold>
-	<!-- morale change will never exceed this amount (or it's negative) -->
-	<MaximumMoralePerAgent>8</MaximumMoralePerAgent>
-	<!-- a maximum amount of morale that can be granted for battle advantage (or it's negative) -->
-	<MaximumAdvantageMorale>3</MaximumAdvantageMorale>
-	<!-- a key that will apply cheering, default is V (47)
-	full code list: https://pastebin.com/v5Vz84ys -->
-	<KeyCode>47</KeyCode>
+	<Cheering>
+		<!-- display debug information. Also if exception occurs, it gets copied to clipboard -->
+		<DebugMode>false</DebugMode>
+		<!-- defines how many times you can cheer regardless of your skills -->
+		<BaselineCheerAmount>2</BaselineCheerAmount>
+		<!-- you receive an additional cheer every X Leadership levels. Values 	lower than 1 will be set to 1. -->
+		<CheersPerXLeadershipLevels>50</CheersPerXLeadershipLevels>
+		<!-- should morale change be displayed in message box? -->
+		<ReportMoraleChange>true</ReportMoraleChange>
+		<!-- should we prevent negative morale change (for friendly units)? -->
+		<PreventNegativeMorale>true</PreventNegativeMorale>
+		<!-- how high your leadership has to be for it to affect enemies? -->
+		<EnemyMoraleLeadershipThreshold>75</EnemyMoraleLeadershipThreshold>
+		<!-- morale change will never exceed this amount (or it's negative) -->
+		<MaximumMoralePerAgent>8</MaximumMoralePerAgent>
+		<!-- a maximum amount of morale that can be granted for battle advantage (	or it's negative) -->
+		<MaximumAdvantageMorale>3</MaximumAdvantageMorale>
+		<!-- a key that will apply cheering, default is V (47)
+		full code list: https://pastebin.com/v5Vz84ys -->
+		<KeyCode>47</KeyCode>
+	</Cheering>
 
 	<!-- AI section -->
 	<AI>

@@ -39,9 +39,9 @@ namespace LeadershipReloaded.Player {
 			if (banner == null) return;
 
 			if (agent == Agent.Main) {
-				_cheerAmount = _config.BaselineCheerAmount;
+				_cheerAmount = _config.Cheering.BaselineCheerAmount;
 				var leadership = agent.Character?.GetSkillValue(DefaultSkills.Leadership) ?? 0;
-				_cheerAmount += Math.DivRem(leadership, _config.CheersPerXLeadershipLevels, out _);
+				_cheerAmount += Math.DivRem(leadership, _config.Cheering.CheersPerXLeadershipLevels, out _);
 				Helpers.Say("{=cheercounter}" + _strings.CheerCounter.Replace("$COUNT$", _cheerAmount.ToString()),
 							new Dictionary<string, TextObject> {
 								{ "COUNT", new TextObject(_cheerAmount.ToString()) }
@@ -56,7 +56,7 @@ namespace LeadershipReloaded.Player {
 		/// </summary>
 		public override async void OnMissionTick(float dt) {
 			if (Agent.Main != null) {
-				if (Input.IsKeyReleased((InputKey)_config.KeyCode) && _canCheer) {
+				if (Input.IsKeyReleased((InputKey)_config.Cheering.KeyCode) && _canCheer) {
 					if (Mission.Current.Mode != MissionMode.Battle) return;
 
 					_canCheer = false;
@@ -106,7 +106,7 @@ namespace LeadershipReloaded.Player {
 					await Task.Delay(MBRandom.RandomInt(0, 9));
 				}
 			} catch (Exception ex) {
-				if (_config.DebugMode) {
+				if (_config.Cheering.DebugMode) {
 					Helpers.Log(ex.Message);
 					Clipboard.SetText(ex.Message + "\n" + ex.StackTrace);
 				}
@@ -128,8 +128,8 @@ namespace LeadershipReloaded.Player {
 
 			var playerPower = 0f;
 			var enemyPower = 0f;
-			var mCap = _config.MaximumMoralePerAgent;
-			var aCap = _config.MaximumAdvantageMorale;
+			var mCap = _config.Cheering.MaximumMoralePerAgent;
+			var aCap = _config.Cheering.MaximumAdvantageMorale;
 
 			try {
 				foreach (var team in Mission.Current.Teams) {
@@ -167,10 +167,10 @@ namespace LeadershipReloaded.Player {
 				foreach (var a in friendlyAgentsList) {
 					_common.ApplyCheerEffects(a, _moraleChange);
 					await Task.Delay(_rng.Next(0, 9));
-					totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, noNegativeMorale: _config.PreventNegativeMorale);
+					totalFriendlyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, noNegativeMorale: _config.Cheering.PreventNegativeMorale);
 				}
 
-				if (leadership >= _config.EnemyMoraleLeadershipThreshold) {
+				if (leadership >= _config.Cheering.EnemyMoraleLeadershipThreshold) {
 					foreach (var a in enemyAgentsList) {
 						totalEnemyMoraleApplied += _common.ApplyMoraleChange(a, _moraleChange, true);
 						_common.ApplyCheerEffects(a, _moraleChange, false);
@@ -193,7 +193,7 @@ namespace LeadershipReloaded.Player {
 
 				_cheerAmount--;
 
-				if (_config.ReportMoraleChange) {
+				if (_config.Cheering.ReportMoraleChange) {
 					if (totalFriendlyMoraleApplied > 0) {
 						Helpers.Say("{=friendly_positivemorale}" + _strings.Friendly.PositiveMorale
 								.Replace("$AGENTMORALE$", _moraleChange.ToString())
@@ -203,7 +203,7 @@ namespace LeadershipReloaded.Player {
 									{ "TOTALMORALE", new TextObject(totalFriendlyMoraleApplied) }
 								}
 						);
-						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
+						if (leadership >= _config.Cheering.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
 							Helpers.Say("{=enemy_negativemorale}" + _strings.Enemy.NegativeMorale
 									.Replace("$AGENTMORALE$", (_moraleChange / 2).ToString())
 									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString()),
@@ -222,7 +222,7 @@ namespace LeadershipReloaded.Player {
 									{ "TOTALMORALE", new TextObject(totalFriendlyMoraleApplied) }
 								}
 						);
-						if (leadership >= _config.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
+						if (leadership >= _config.Cheering.EnemyMoraleLeadershipThreshold && totalEnemyMoraleApplied > 0) {
 							Helpers.Say("{=friendly_positivemorale}" + _strings.Enemy.PositiveMorale
 									.Replace("$TOTALMORALE$", totalEnemyMoraleApplied.ToString()),
 									new Dictionary<string, TextObject> {
@@ -250,7 +250,7 @@ namespace LeadershipReloaded.Player {
 				}
 
 			} catch (Exception ex) {
-				if (_config.DebugMode) {
+				if (_config.Cheering.DebugMode) {
 					Helpers.Log(ex.Message);
 					Clipboard.SetText(ex.Message + "\n" + ex.StackTrace);
 				}

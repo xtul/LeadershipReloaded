@@ -1,5 +1,11 @@
 ﻿namespace LeadershipReloaded.Settings {
 	public class Config {
+		public Cheering Cheering { get; set; }
+		public AI AI { get; set; }
+		public ResponsiveOrders ResponsiveOrders { get; set; }
+	}
+
+	public class Cheering {
 		public int KeyCode { get; set; }
 		public int BaselineCheerAmount { get; set; }
 		public int CheersPerXLeadershipLevels { get; set; }
@@ -9,8 +15,6 @@
 		public float MaximumMoralePerAgent { get; set; }
 		public float MaximumAdvantageMorale { get; set; }
 		public bool DebugMode { get; set; }
-		public AI AI { get; set; }
-		public ResponsiveOrders ResponsiveOrders { get; set; }
 	}
 
 	public class AI {
@@ -22,7 +26,7 @@
 		public bool DisplayAnnouncement { get; set; }
 		public bool ImpactfulDeath { get; set; }
 		public int DeathMoraleDecrease { get; set; }
-		public PersonalEffects PersonalEffects {get;set;}
+		public PersonalEffects PersonalEffects { get; set; }
 	}
 
 	public class PersonalEffects {

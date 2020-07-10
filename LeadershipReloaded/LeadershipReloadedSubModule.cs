@@ -28,10 +28,10 @@ namespace LeadershipReloaded {
 			_config = ReadAndStoreAsType<Config>("config");
 			_strings = ReadAndStoreAsType<Strings>("strings");
 
-			if (_config.DebugMode == true) {
+			if (_config.Cheering.DebugMode == true) {
 				Log("{=debug_loadingsuccessful}" + _strings.Debug.LoadingSuccessful);
+				Log(MissionState.Current.MissionName);
 			}
-
 
 			CorrectConfig();
 
@@ -48,19 +48,19 @@ namespace LeadershipReloaded {
 		}
 
 		private void CorrectConfig() {
-			_config.CheersPerXLeadershipLevels.Clamp(1, 500);
-			_config.MaximumAdvantageMorale.Clamp(0, 100);
-			_config.MaximumMoralePerAgent.Clamp(0, 100);
-			_config.BaselineCheerAmount.Clamp(0, 9999);
+			_config.Cheering.CheersPerXLeadershipLevels.Clamp(1, 500);
+			_config.Cheering.MaximumAdvantageMorale.Clamp(0, 100);
+			_config.Cheering.MaximumMoralePerAgent.Clamp(0, 100);
+			_config.Cheering.BaselineCheerAmount.Clamp(0, 9999);
 
 			_config.AI.DeathMoraleDecrease.Clamp(0, 100);
 			_config.AI.MaximumAdvantageMorale.Clamp(0, 100);
 			_config.AI.MaximumMoralePerAgent.Clamp(0, 100);
 			_config.AI.PersonalEffects.RelationshipChange.Clamp(-100, 100);
 
-			if (!Enum.IsDefined(typeof(InputKey), _config.KeyCode)) {
+			if (!Enum.IsDefined(typeof(InputKey), _config.Cheering.KeyCode)) {
 				Say("{=invalidkeycode}" + _strings.InvalidKeyCode);
-				_config.KeyCode = 47;
+				_config.Cheering.KeyCode = 47;
 			}
 		}
 	}
