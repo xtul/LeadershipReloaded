@@ -86,11 +86,11 @@ namespace LeadershipReloaded.AI {
 					playerHero.Clan.AddRenown(_config.AI.PersonalEffects.RenownGain);
 
 					Helpers.Say("{=death_personal_effect}" + _strings.Lord.DeathPersonalEffect
-								.Replace("$NAME$", affectedAgent.Name)
+								.Replace("$NAME$", affectedAgent?.Name ?? "")
 								.Replace("$RENOWN$", _config.AI.PersonalEffects.RenownGain.ToString())
 								.Replace("$RELATIONSHIPHIT$", _config.AI.PersonalEffects.RelationshipChange.ToString()),
 								new Dictionary<string, TextObject> {
-									{ "NAME", new TextObject(affectedAgent.Name) },
+									{ "NAME", new TextObject(affectedAgent?.Name ?? "") },
 									{ "RENOWN", new TextObject(_config.AI.PersonalEffects.RenownGain.ToString()) },
 									{ "RELATIONSHIPHIT", new TextObject(_config.AI.PersonalEffects.RelationshipChange.ToString()) }
 								});

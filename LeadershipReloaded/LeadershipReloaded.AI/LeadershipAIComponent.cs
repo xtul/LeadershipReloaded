@@ -47,13 +47,11 @@ namespace LeadershipReloaded.AI {
 		}
 
 		protected override void OnTickAsAI(float dt) {
-			// the trick here is to prevent NullException
-			// when getting the value of Mission.Current.Mode
 			if (Mission.Current != null && Mission.Current.Mode != MissionMode.Battle) return;
-			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering) {
-				_canCheer = true;
-			}
+			if (_agent.Health < 1) return;
 			if (_agent.Team == null) return;
+
+			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering) _canCheer = true;
 
 			if (!_canCheer) return;
 			if (_cheerAmount == 0) {
