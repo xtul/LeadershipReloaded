@@ -48,7 +48,6 @@ namespace LeadershipReloaded.AI {
 			if (_agent.Health < 1) return;
 			if (_agent.Team == null) return;
 
-			// make sure 
 			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering) _canCheer = true;
 
 			if (!_canCheer) return;
