@@ -307,7 +307,6 @@
   <ItemGroup>
     <None Include="LICENSE" />
     <None Include="packages.config" />
-    <None Include="README.md" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy /d /y "$(MSBuildProjectDirectory)\SubModule.xml" "C:\Steam\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\LeadershipReloaded"</PostBuildEvent>
