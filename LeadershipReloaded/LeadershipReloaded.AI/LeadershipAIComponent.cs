@@ -25,8 +25,6 @@ namespace LeadershipReloaded.AI {
 		private float _timerToEnableCheering;
 		private bool _canCheer;
 		private IEnumerable<Agent> _agentsInArea;
-		private readonly BattleSideEnum _playerSide;
-
 
 		/// <summary>
 		/// Allows AI to cheer under almost the same rules as the player.
@@ -42,8 +40,7 @@ namespace LeadershipReloaded.AI {
 			_initialMorale = _agent?.GetMorale() ?? 0;
 			CheerRange = (_leadership / 2).Clamp(50, 200);
 			_canCheer = false;
-			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + MBRandom.RandomInt(8, 13);
-			_playerSide = agent.Team.Side;
+			_timerToEnableCheering = MBCommon.TimeType.Mission.GetTime() + MBRandom.RandomInt(8, 20);
 		}
 
 		protected override void OnTickAsAI(float dt) {
@@ -51,6 +48,7 @@ namespace LeadershipReloaded.AI {
 			if (_agent.Health < 1) return;
 			if (_agent.Team == null) return;
 
+			// make sure 
 			if (MBCommon.TimeType.Mission.GetTime() > _timerToEnableCheering) _canCheer = true;
 
 			if (!_canCheer) return;
@@ -101,27 +99,9 @@ namespace LeadershipReloaded.AI {
 				);
 			}
 
-			float playerPower = 0;
-			float enemyPower = 0;
 			int mCap = _config.AI.MaximumMoralePerAgent;
-			int aCap = _config.AI.MaximumAdvantageMorale;
-			var teams = Mission.Current.Teams;
 
-			foreach (Team t in teams) {
-				// formation list may change, have to store it first
-				var formations = t.Formations; 
-				foreach (Formation f in formations) {
-					if (f.Team.Side == _playerSide) {
-						playerPower += f?.GetFormationPower() ?? 0f;
-					} else {
-						enemyPower += f?.GetFormationPower() ?? 0f;
-					}
-				}
-			}
-
-			float advantageBonus = ((playerPower - enemyPower) / 40).Clamp(aCap * -1, aCap);
-
-			_moraleChange = (int)Math.Round(((_leadership / 18) + advantageBonus).Clamp(mCap * -1, mCap));
+			_moraleChange = (int)Math.Round((_leadership / 15f).Clamp(mCap * -1, mCap));
 
 			if (_config.Cheering.PreventNegativeMorale) {
 				_moraleChange.Clamp(0, 100);
