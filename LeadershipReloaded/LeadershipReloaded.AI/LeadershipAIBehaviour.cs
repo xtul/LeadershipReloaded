@@ -74,33 +74,32 @@ namespace LeadershipReloaded.AI {
 		}
 
 		public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow) {
+			if (!_config.AI.PersonalEffects.Enabled) return;
 			if (Campaign.Current == null) return;
 			if (affectedAgent.Character == null) return;
 			if (!affectedAgent.IsHero) return;
 
-			if (_config.AI.PersonalEffects.Enabled) {
-				if (_personalDeathEffectAgentList.Contains(affectedAgent) && affectorAgent == Agent.Main) {
-					try {
-						var killedHero = Hero.FindFirst(x => x.StringId == affectedAgent.Character.StringId);
-						var playerHero = Hero.FindFirst(x => x.StringId == affectorAgent.Character.StringId);
+			if (_personalDeathEffectAgentList.Contains(affectedAgent) && affectorAgent == Agent.Main) {
+				try {
+					var killedHero = Hero.FindFirst(x => x.StringId == affectedAgent.Character.StringId);
+					var playerHero = Hero.FindFirst(x => x.StringId == affectorAgent.Character.StringId);
 
-						ChangeRelationAction.ApplyPlayerRelation(killedHero, _config.AI.PersonalEffects.RelationshipChange, false, true);
-						playerHero.Clan.AddRenown(_config.AI.PersonalEffects.RenownGain);
+					ChangeRelationAction.ApplyPlayerRelation(killedHero, _config.AI.PersonalEffects.RelationshipChange, false, true);
+					playerHero.Clan.AddRenown(_config.AI.PersonalEffects.RenownGain);
 
-						Helpers.Say("{=death_personal_effect}" + _strings.Lord.DeathPersonalEffect
-									.Replace("$NAME$", affectedAgent?.Name ?? "")
-									.Replace("$RENOWN$", _config.AI.PersonalEffects.RenownGain.ToString())
-									.Replace("$RELATIONSHIPHIT$", _config.AI.PersonalEffects.RelationshipChange.ToString()),
-									new Dictionary<string, TextObject> {
-									{ "NAME", new TextObject(affectedAgent?.Name ?? "") },
-									{ "RENOWN", new TextObject(_config.AI.PersonalEffects.RenownGain.ToString()) },
-									{ "RELATIONSHIPHIT", new TextObject(_config.AI.PersonalEffects.RelationshipChange.ToString()) }
-									});
-					} catch (Exception ex) {
-						if (_config.Cheering.DebugMode) {
-							Helpers.Log($"{ex.Message}");
-							Helpers.Log($"{ex.StackTrace}");
-						}
+					Helpers.Say("{=death_personal_effect}" + _strings.Lord.DeathPersonalEffect
+								.Replace("$NAME$", affectedAgent?.Name ?? "")
+								.Replace("$RENOWN$", _config.AI.PersonalEffects.RenownGain.ToString())
+								.Replace("$RELATIONSHIPHIT$", _config.AI.PersonalEffects.RelationshipChange.ToString()),
+								new Dictionary<string, TextObject> {
+								{ "NAME", new TextObject(affectedAgent?.Name ?? "") },
+								{ "RENOWN", new TextObject(_config.AI.PersonalEffects.RenownGain.ToString()) },
+								{ "RELATIONSHIPHIT", new TextObject(_config.AI.PersonalEffects.RelationshipChange.ToString()) }
+								});
+				} catch (Exception ex) {
+					if (_config.Cheering.DebugMode) {
+						Helpers.Log($"{ex.Message}");
+						Helpers.Log($"{ex.StackTrace}");
 					}
 				}
 			}
