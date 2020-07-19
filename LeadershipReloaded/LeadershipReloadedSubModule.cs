@@ -27,7 +27,7 @@ namespace LeadershipReloaded {
 			_common = new CheerCommonMethods();
 			_config = ReadAndStoreAsType<Config>("config");
 			_strings = ReadAndStoreAsType<Strings>("strings");
-
+			
 			if (_config.Cheering.DebugMode == true) {
 				Log("{=debug_loadingsuccessful}" + _strings.Debug.LoadingSuccessful);
 				Log(MissionState.Current.MissionName);

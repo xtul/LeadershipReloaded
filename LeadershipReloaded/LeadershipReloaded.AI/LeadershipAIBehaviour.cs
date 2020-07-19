@@ -7,6 +7,7 @@ using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
+using System;
 
 namespace LeadershipReloaded.AI {
 	internal class LeadershipAIBehaviour : MissionBehaviour {
@@ -79,21 +80,25 @@ namespace LeadershipReloaded.AI {
 
 			if (_config.AI.PersonalEffects.Enabled) {
 				if (_personalDeathEffectAgentList.Contains(affectedAgent) && affectorAgent == Agent.Main) {
-					var killedHero = Hero.FindFirst(x => x.StringId == affectedAgent.Character.StringId);
-					var playerHero = Hero.FindFirst(x => x.StringId == affectorAgent.Character.StringId);
-					
-					ChangeRelationAction.ApplyPlayerRelation(killedHero, _config.AI.PersonalEffects.RelationshipChange, false, true);
-					playerHero.Clan.AddRenown(_config.AI.PersonalEffects.RenownGain);
+					try {
+						var killedHero = Hero.FindFirst(x => x.StringId == affectedAgent.Character.StringId);
+						var playerHero = Hero.FindFirst(x => x.StringId == affectorAgent.Character.StringId);
 
-					Helpers.Say("{=death_personal_effect}" + _strings.Lord.DeathPersonalEffect
-								.Replace("$NAME$", affectedAgent?.Name ?? "")
-								.Replace("$RENOWN$", _config.AI.PersonalEffects.RenownGain.ToString())
-								.Replace("$RELATIONSHIPHIT$", _config.AI.PersonalEffects.RelationshipChange.ToString()),
-								new Dictionary<string, TextObject> {
+						ChangeRelationAction.ApplyPlayerRelation(killedHero, _config.AI.PersonalEffects.RelationshipChange, false, true);
+						playerHero.Clan.AddRenown(_config.AI.PersonalEffects.RenownGain);
+
+						Helpers.Say("{=death_personal_effect}" + _strings.Lord.DeathPersonalEffect
+									.Replace("$NAME$", affectedAgent?.Name ?? "")
+									.Replace("$RENOWN$", _config.AI.PersonalEffects.RenownGain.ToString())
+									.Replace("$RELATIONSHIPHIT$", _config.AI.PersonalEffects.RelationshipChange.ToString()),
+									new Dictionary<string, TextObject> {
 									{ "NAME", new TextObject(affectedAgent?.Name ?? "") },
 									{ "RENOWN", new TextObject(_config.AI.PersonalEffects.RenownGain.ToString()) },
 									{ "RELATIONSHIPHIT", new TextObject(_config.AI.PersonalEffects.RelationshipChange.ToString()) }
-								});
+									});
+					} catch (NullReferenceException ex) {
+						Helpers.Log($"{ex.StackTrace}");
+					}
 				}
 			}
 		}

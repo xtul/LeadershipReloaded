@@ -21,7 +21,6 @@ namespace LeadershipReloaded {
 		}
 
 		public static void Log(string text) {
-			text = CleanupText(text);
 			InformationManager.DisplayMessage(new InformationMessage(new TextObject(text, null).ToString(), new Color(0.5f, 0.5f, 0.5f)));
 		}
 
