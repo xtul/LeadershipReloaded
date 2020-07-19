@@ -96,8 +96,11 @@ namespace LeadershipReloaded.AI {
 									{ "RENOWN", new TextObject(_config.AI.PersonalEffects.RenownGain.ToString()) },
 									{ "RELATIONSHIPHIT", new TextObject(_config.AI.PersonalEffects.RelationshipChange.ToString()) }
 									});
-					} catch (NullReferenceException ex) {
-						Helpers.Log($"{ex.StackTrace}");
+					} catch (Exception ex) {
+						if (_config.Cheering.DebugMode) {
+							Helpers.Log($"{ex.Message}");
+							Helpers.Log($"{ex.StackTrace}");
+						}
 					}
 				}
 			}
