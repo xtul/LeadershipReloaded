@@ -38,23 +38,16 @@ namespace LeadershipReloaded.Common {
 			if (doAnim) {
 				ActionIndexCache[] cheerActions = _cheerNoneActions;
 				if (a.Mission == null) return;
-				var wieldedWeapons = a.WieldedWeapon.Weapons;
-				if (wieldedWeapons.Count > 0) {
-					foreach (var weapon in wieldedWeapons) {
-						if (weapon.IsRangedWeapon) {
-							cheerActions = _cheerBowActions;
-							break;
-						}
-						if (weapon.IsMeleeWeapon) {
-							if (weapon.RelevantSkill == DefaultSkills.TwoHanded) {
-								cheerActions = _cheer2hActions;
-								break;
-							}
-							if (weapon.RelevantSkill == DefaultSkills.OneHanded || weapon.RelevantSkill == DefaultSkills.Throwing) {
-								cheerActions = _cheer1hActions;
-								break;
-							}
-						}
+				var weapon = a.WieldedWeapon;
+				if (!weapon.IsEmpty) {
+					if (weapon.Item.RelevantSkill == DefaultSkills.Bow) {
+						cheerActions = _cheerBowActions;
+					}
+					if (weapon.Item.RelevantSkill == DefaultSkills.TwoHanded) {
+						cheerActions = _cheer2hActions;
+					}
+					if (weapon.Item.RelevantSkill == DefaultSkills.OneHanded || weapon.Item.RelevantSkill == DefaultSkills.Throwing) {
+						cheerActions = _cheer1hActions;
 					}
 				}
 

@@ -12,7 +12,6 @@ namespace LeadershipReloaded.ResponsiveOrders {
 		public override MissionBehaviourType BehaviourType => MissionBehaviourType.Other;
 
 		private readonly Config _config;
-		private readonly Random _rng;
 		private readonly SoundManager _soundManager;
 		private OrderController _orderController;
 		private int _playerLeadership;
@@ -23,7 +22,6 @@ namespace LeadershipReloaded.ResponsiveOrders {
 
 		public LeadershipResponsiveOrdersBehaviour(Config config) {
 			_config = config;
-			_rng = new Random();
 			_soundManager = new SoundManager(config);
 		}
 
@@ -59,7 +57,7 @@ namespace LeadershipReloaded.ResponsiveOrders {
 
 			var agentPosition = a.Position;
 			var distanceToPlayer = Agent.Main.GetPathDistanceToPoint(ref agentPosition);
-			var timeToRespond = (int)(_rng.Next(900, 1200) * (distanceToPlayer / 10)).Clamp(900, 2000);
+			var timeToRespond = (int)(MBRandom.RandomInt(900, 1200) * (distanceToPlayer / 10)).Clamp(900, 2000);
 
 			await Task.Delay(timeToRespond);
 
@@ -145,7 +143,7 @@ namespace LeadershipReloaded.ResponsiveOrders {
 
 				_affirmativeAgentCounter++;
 
-				var timeToRespond = (int)(_rng.Next(700, 900) * (distanceToPlayer / 10)).Clamp(500, 1200);
+				var timeToRespond = (int)(MBRandom.RandomInt(700, 900) * (distanceToPlayer / 10)).Clamp(500, 1200);
 
 				await Task.Delay(timeToRespond);
 
@@ -157,7 +155,7 @@ namespace LeadershipReloaded.ResponsiveOrders {
 				};
 
 				if (Mission.Current != null && !Mission.Current.MissionEnded()) {
-					reactionList[_rng.Next(0, 3)].Invoke();
+					reactionList[MBRandom.RandomInt(0, 3)].Invoke();
 				}
 			} catch { }
 		}
@@ -165,7 +163,7 @@ namespace LeadershipReloaded.ResponsiveOrders {
 		private async void Charge(Agent a) {
 			if (a == Agent.Main) return;
 
-			await Task.Delay(_rng.Next(600, 2000));
+			await Task.Delay(MBRandom.RandomInt(600, 2000));
 
 			if (Mission.Current != null && !Mission.Current.MissionEnded()) {
 				a.MakeVoice(SkinVoiceManager.VoiceType.Yell, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);				
@@ -190,12 +188,13 @@ namespace LeadershipReloaded.ResponsiveOrders {
 				var randomAgent = appliedFormations.GetRandomElement().Team.ActiveAgents.GetRandomElement();
 				PlayHornBasedOnCulture(randomAgent, Agent.Main, orderType);
 				if (_config.ResponsiveOrders.ContinuousChargeYell && (orderType == OrderType.Charge || orderType == OrderType.ChargeWithTarget)) {
-					for (int i = 0; i < _rng.Next(8, 15); i++) {
+					var rng = MBRandom.RandomInt(8, 15);
+					for (int i = 0; i < rng; i++) {
 						for (int f = 0; f <= appliedFormations.Count(); f++) {
 							var formation = appliedFormations.ElementAt(f);
 							if (formation == null) return;
 
-							var timeGate = MBCommon.GetTime(MBCommon.TimeType.Mission) + (_rng.Next(3, 9) / 10f);
+							var timeGate = MBCommon.GetTime(MBCommon.TimeType.Mission) + (MBRandom.RandomInt(3, 9) / 10f);
 							while (Mission.Current != null) {
 								if (timeGate > MBCommon.GetTime(MBCommon.TimeType.Mission)) {
 									await Task.Delay(300);
