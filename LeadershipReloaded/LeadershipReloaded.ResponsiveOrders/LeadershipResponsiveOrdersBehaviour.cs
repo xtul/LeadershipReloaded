@@ -184,30 +184,37 @@ namespace LeadershipReloaded.ResponsiveOrders {
 			if (Mission.Current == null) return;
 
 			_orderType = orderType;
-			try {
-				var randomAgent = appliedFormations.GetRandomElement().Team.ActiveAgents.GetRandomElement();
-				PlayHornBasedOnCulture(randomAgent, Agent.Main, orderType);
-				if (_config.ResponsiveOrders.ContinuousChargeYell && (orderType == OrderType.Charge || orderType == OrderType.ChargeWithTarget)) {
-					var rng = MBRandom.RandomInt(8, 15);
-					for (int i = 0; i < rng; i++) {
-						for (int f = 0; f <= appliedFormations.Count(); f++) {
-							var formation = appliedFormations.ElementAt(f);
-							if (formation == null) return;
+			var randomAgent = appliedFormations.GetRandomElement().Team.ActiveAgents.GetRandomElement();
+			PlayHornBasedOnCulture(randomAgent, Agent.Main, orderType);
 
-							var timeGate = MBCommon.GetTime(MBCommon.TimeType.Mission) + (MBRandom.RandomInt(3, 9) / 10f);
-							while (Mission.Current != null) {
-								if (timeGate > MBCommon.GetTime(MBCommon.TimeType.Mission)) {
-									await Task.Delay(300);
-									continue;
-								}
-								formation.ApplyActionOnEachUnit(Charge);
-								break;
+			var shouldContinuouslyYell = _config.ResponsiveOrders.ContinuousChargeYell && 
+											(orderType == OrderType.Charge || 
+											orderType == OrderType.ChargeWithTarget);
+
+			if (shouldContinuouslyYell) {
+				var rng = MBRandom.RandomInt(8, 15);
+
+				for (int i = 0; i < rng; i++) {
+					for (int f = 0; f <= appliedFormations.Count(); f++) {
+						Formation formation = null;
+						try {
+							formation = appliedFormations.ElementAt(f);
+						} catch { }
+						if (formation == null) return;
+
+						var timeGate = MBCommon.GetTime(MBCommon.TimeType.Mission) + (MBRandom.RandomInt(3, 9) / 10f);
+						while (Mission.Current != null) {
+							if (timeGate > MBCommon.GetTime(MBCommon.TimeType.Mission)) {
+								await Task.Delay(300);
+								continue;
 							}
+							formation.ApplyActionOnEachUnit(Charge);
+							break;
 						}
 					}
-					_affirmativeAgentCounter = 0;
-					return;
 				}
+				_affirmativeAgentCounter = 0;				
+			} else {
 				// default reaction
 				for (int f = 0; f <= appliedFormations.Count(); f++) {
 					var formation = appliedFormations.ElementAt(f);
@@ -216,7 +223,9 @@ namespace LeadershipReloaded.ResponsiveOrders {
 					formation.ApplyActionOnEachUnit(Affirmative);
 					_affirmativeAgentCounter = 0;
 				}
-			} catch { }
+			}
+
+			
 		}
 
 		private void PlayHornBasedOnCulture(Agent agentPlayingHorn, Agent agentCommander, OrderType orderType) {
